@@ -1,1890 +1,1236 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="zh-TW">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Our Wedding Quiz - 婚禮互動遊戲</title>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>昶瑋 & 俞蕙 幸福簡報互動遊戲</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts: Noto Serif TC (典雅繁中) & Playfair Display (唯美襯線英) -->
-    <link
-      href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@300;400;600;700;900&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap"
-      rel="stylesheet"
-    />
-    <!-- Lucide Icons -->
-    <script src="https://unpkg.com/lucide@latest"></script>
-
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- QR Code Generator -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Noto+Serif+TC:wght@400;600;900&display=swap" rel="stylesheet">
+    
     <style>
-      body {
-        font-family: "Noto Serif TC", serif;
-        background: radial-gradient(
-          circle at top,
-          #faf6f0 0%,
-          #f5ece1 50%,
-          #ebe0d0 100%
-        );
-      }
-      .font-serif-eng {
-        font-family: "Playfair Display", serif;
-      }
-
-      /* 櫻花/愛心飄落動畫 */
-      @keyframes snowfall {
-        0% {
-          transform: translateY(-10vh) translateX(0) rotate(0deg);
-          opacity: 0.8;
+        body {
+            font-family: 'Noto Serif TC', serif;
+            background: radial-gradient(circle at center, #fff6f6 0%, #f7e5e5 100%);
+            color: #4a3e3d;
         }
-        100% {
-          transform: translateY(110vh) translateX(80px) rotate(360deg);
-          opacity: 0;
+        .serif-title {
+            font-family: 'Cormorant Garamond', 'Noto Serif TC', serif;
         }
-      }
-      .petal {
-        position: absolute;
-        top: -50px;
-        pointer-events: none;
-        animation: snowfall 12s linear infinite;
-      }
-
-      /* Q版人物呼吸與動畫 */
-      @keyframes breathe {
-        0%,
-        100% {
-          transform: translateY(0) scaleY(1);
+        /* 奢華金邊與PPT字體陰影 */
+        .ppt-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            border: 2px solid #e2c7b2;
+            box-shadow: 0 15px 35px rgba(226, 199, 178, 0.25);
+            border-radius: 20px;
         }
-        50% {
-          transform: translateY(-4px) scaleY(1.02);
+        .gold-border {
+            border: 1px solid #d4af37;
         }
-      }
-      @keyframes bounce-happy {
-        0%,
-        100% {
-          transform: translateY(0) scale(1);
+        .gold-text {
+            color: #b89047;
         }
-        50% {
-          transform: translateY(-15px) scale(1.04) rotate(2deg);
+        .gold-btn {
+            background: linear-gradient(135deg, #d4af37 0%, #aa7c11 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(170, 124, 17, 0.2);
+            transition: all 0.3s ease;
         }
-      }
-      @keyframes shake-sad {
-        0%,
-        100% {
-          transform: translateX(0) rotate(0);
+        .gold-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(170, 124, 17, 0.35);
         }
-        20%,
-        60% {
-          transform: translateX(-6px) rotate(-2deg);
+        
+        /* 櫻花與愛心飄落 */
+        .cherry-blossom {
+            position: absolute;
+            background-color: #ffb7c5;
+            border-radius: 150% 0 150% 150%;
+            opacity: 0.6;
+            pointer-events: none;
+            z-index: 1;
+            animation: fall linear infinite;
         }
-        40%,
-        80% {
-          transform: translateX(6px) rotate(2deg);
+        @keyframes fall {
+            0% {
+                transform: translateY(-10px) rotate(0deg);
+                opacity: 0.8;
+            }
+            100% {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
         }
-      }
-      @keyframes heartbeat {
-        0%,
-        100% {
-          transform: scale(1);
-        }
-        50% {
-          transform: scale(1.1);
-        }
-      }
-
-      .q-char-breathe {
-        animation: breathe 3.5s infinite ease-in-out;
-      }
-      .q-char-happy {
-        animation: bounce-happy 0.7s infinite ease-in-out;
-      }
-      .q-char-sad {
-        animation: shake-sad 0.6s infinite ease-in-out;
-      }
-      .heart-pulse {
-        animation: heartbeat 1.5s infinite ease-in-out;
-      }
-
-      /* PPT 唯美感：薄霧柔光與典雅金邊 */
-      .ppt-card {
-        background: rgba(255, 255, 255, 0.82);
-        backdrop-filter: blur(12px);
-        border: 1px solid rgba(212, 175, 55, 0.25);
-        box-shadow: 0 10px 30px rgba(184, 150, 110, 0.15);
-      }
-
-      .gold-border {
-        border: 1px solid rgba(212, 175, 55, 0.4);
-      }
-
-      .gold-gradient-bg {
-        background: linear-gradient(135deg, #d4af37 0%, #b8962e 100%);
-      }
-
-      /* 倒數計時條 */
-      .timer-transition {
-        transition: width 1s linear;
-      }
     </style>
-  </head>
-  <body
-    class="min-h-screen relative overflow-x-hidden flex flex-col select-none text-slate-800"
-  >
-    <div
-      id="petal-container"
-      class="absolute inset-0 overflow-hidden pointer-events-none z-0"
-    ></div>
+</head>
+<body class="min-h-screen relative overflow-x-hidden flex flex-col justify-between">
 
-    <!-- 音效切換按鈕 -->
-    <div class="absolute top-6 right-6 z-50">
-      <button
-        onclick="toggleSound()"
-        id="sound-btn"
-        class="p-3 bg-white/90 hover:bg-white rounded-full shadow-md text-[#b8962e] transition-all flex items-center justify-center border border-amber-100"
-      >
-        <i data-lucide="volume-2" class="w-5 h-5"></i>
-      </button>
-    </div>
+    <!-- 櫻花背景裝飾 -->
+    <div id="sakura-container" class="absolute inset-0 overflow-hidden pointer-events-none z-0"></div>
 
-    <!-- 主容器 -->
-    <main
-      class="flex-grow flex items-center justify-center p-4 md:p-8 z-10 relative"
-    >
-      <!-- ================= 主螢幕投影片 (HOST VIEW) ================= -->
-      <div id="host-view" class="hidden w-full max-w-6xl">
-        <div
-          id="screen-welcome"
-          class="w-full ppt-card rounded-3xl p-8 md:p-12 transition-all transform duration-500 scale-100 flex flex-col items-center"
-        >
-          <div
-            class="text-[#b8962e] font-serif-eng text-xl md:text-2xl mb-2 tracking-[0.2em] uppercase"
-          >
-            The Celebration of Love
-          </div>
-          <h1
-            class="text-3xl md:text-5xl font-black text-slate-800 tracking-wider mb-2 text-center"
-            id="host-wedding-title"
-          >
-            昶瑋 ＆ 俞蕙 ‧ 婚禮互動遊戲
-          </h1>
-          <div class="h-[1px] w-48 bg-[#d4af37]/60 my-6"></div>
-
-          <div
-            class="grid grid-cols-1 lg:grid-cols-12 gap-8 w-full mt-4 items-center"
-          >
-            <!-- 左側：唯美新人Q版造型 -->
-            <div
-              class="lg:col-span-7 flex flex-col items-center border-b lg:border-b-0 lg:border-r border-slate-200/60 pb-8 lg:pb-0 lg:pr-8"
-            >
-              <div class="flex justify-center items-end gap-6 md:gap-10 my-6">
-                <!-- 新郎 -->
-                <div class="flex flex-col items-center">
-                  <div
-                    id="welcome-groom-svg"
-                    class="w-28 md:w-36 q-char-breathe"
-                  ></div>
-                  <span
-                    id="label-groom-name"
-                    class="mt-3 px-4 py-1.5 bg-slate-100 text-slate-700 font-bold rounded-full text-sm border border-slate-200"
-                    >新郎 🤵‍♂️</span
-                  >
+    <!-- 主要內容區 -->
+    <main class="flex-grow flex items-center justify-center p-4 md:p-8 z-10 relative">
+        
+        <!-- ================= 大螢幕端 (Master UI) ================= -->
+        <div id="screen-master" class="hidden w-full max-w-6xl ppt-card p-6 md:p-10 flex flex-col gap-6">
+            
+            <!-- 頂部標題與狀態 -->
+            <div class="flex flex-col md:flex-row justify-between items-center border-b border-[#e2c7b2] pb-6 gap-4">
+                <div class="text-center md:text-left">
+                    <span class="px-4 py-1.5 bg-[#fbf4ee] text-[#aa7c11] border border-[#e2c7b2] rounded-full text-xs font-semibold tracking-widest uppercase">The Wedding Slide</span>
+                    <h1 class="serif-title text-3xl md:text-4xl font-extrabold text-[#5c4a42] mt-2">
+                        昶瑋 <i class="fa-solid fa-heart text-red-400 animate-pulse"></i> 俞蕙 <span class="text-xl md:text-2xl font-light italic gold-text font-serif">Love Story Quiz</span>
+                    </h1>
                 </div>
-                <div
-                  class="text-[#b8962e] text-3xl font-serif-eng font-bold pb-6"
-                >
-                  ＆
+                <div class="flex items-center gap-4">
+                    <div id="db-status-badge" class="flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold bg-gray-100 text-gray-500">
+                        <span class="w-2.5 h-2.5 rounded-full bg-gray-400 animate-pulse" id="db-status-dot"></span>
+                        <span id="db-status-text">未連線資料庫</span>
+                    </div>
                 </div>
-                <!-- 新娘 -->
-                <div class="flex flex-col items-center">
-                  <div
-                    id="welcome-bride-svg"
-                    class="w-28 md:w-36 q-char-breathe"
-                  ></div>
-                  <span
-                    id="label-bride-name"
-                    class="mt-3 px-4 py-1.5 bg-rose-50 text-rose-700 font-bold rounded-full text-sm border border-rose-100"
-                    >新娘 👰‍♀️</span
-                  >
-                </div>
-              </div>
-
-              <p
-                class="text-sm text-slate-500 max-w-md text-center leading-relaxed mt-4"
-              >
-                歡迎各位嘉賓！請拿出手機掃描右側二維碼，輸入您的專屬暱稱即可一同連線答題。大螢幕將在點擊「開始遊戲」後同步進行！
-              </p>
-
-              <!-- 即時在線賓客列表 -->
-              <div
-                class="w-full mt-6 bg-slate-50/50 rounded-2xl p-4 border border-amber-100/50"
-              >
-                <div class="flex justify-between items-center mb-3">
-                  <span
-                    class="text-xs font-bold text-slate-500 flex items-center gap-1.5"
-                  >
-                    <i data-lucide="users" class="w-4 h-4 text-[#b8962e]"></i>
-                    已連線賓客
-                  </span>
-                  <span
-                    id="joined-count"
-                    class="text-sm font-black text-[#b8962e] bg-white px-2.5 py-0.5 rounded-full border border-amber-100"
-                    >0 人</span
-                  >
-                </div>
-                <div
-                  id="joined-players-list"
-                  class="flex flex-wrap gap-2 max-h-24 overflow-y-auto justify-center content-start"
-                >
-                  <p class="text-xs text-slate-400 py-2">等待賓客掃碼加入...</p>
-                </div>
-              </div>
             </div>
 
-            <!-- 右側：超大 QR Code -->
-            <div
-              class="lg:col-span-5 flex flex-col items-center justify-center"
-            >
-              <div
-                class="p-5 bg-white rounded-2xl shadow-lg border border-amber-100 flex flex-col items-center justify-center"
-              >
-                <!-- 動態QR Code容器 -->
-                <div
-                  id="qr-container"
-                  class="w-56 h-56 md:w-64 md:h-64 flex items-center justify-center bg-slate-50 rounded-xl overflow-hidden"
-                >
-                  <img
-                    id="qr-image"
-                    src=""
-                    alt="掃描 QR Code"
-                    class="w-full h-full object-contain"
-                  />
-                </div>
-                <div
-                  class="mt-4 text-[#b8962e] font-bold text-sm tracking-widest flex items-center gap-1.5 animate-pulse"
-                >
-                  <i data-lucide="qr-code" class="w-4 h-4"></i>
-                  手機掃描 ‧ 即刻參戰
-                </div>
-              </div>
+            <!-- 階段一：首頁與準備大廳 (Lobby) -->
+            <div id="master-lobby" class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                <!-- 左側：唯美介紹與動態 Q 版寵妻新人 -->
+                <div class="lg:col-span-6 flex flex-col items-center lg:items-start text-center lg:text-left gap-6">
+                    <div class="space-y-2">
+                        <h2 class="text-3xl font-bold text-[#5c4a42]">執子之手，將愛延續</h2>
+                        <p class="text-[#8c7466] leading-relaxed">
+                            歡迎各位親朋好友一同參與這場充滿甜蜜與驚喜的幸福問答！請拿出您的手機掃描右側的二維條碼，輸入您對新人的祝福暱稱即可加入遊戲。
+                        </p>
+                    </div>
 
-              <!-- 開始按鈕 -->
-              <button
-                onclick="hostStartGame()"
-                class="mt-8 px-12 py-4 gold-gradient-bg hover:opacity-90 text-white font-black text-lg rounded-2xl shadow-md tracking-widest transition-all transform hover:-translate-y-0.5 active:translate-y-0 flex items-center gap-2"
-              >
-                <i data-lucide="play" class="w-5 h-5 fill-current"></i>
-                開始遊戲
-              </button>
+                    <!-- 寵妻Q版新人動態圖形插槽 -->
+                    <div class="w-full flex justify-center py-4 bg-[#fbf4ee]/60 rounded-2xl border border-dashed border-[#e2c7b2]">
+                        <div id="couple-svg-lobby" class="w-72 h-44"></div>
+                    </div>
+
+                    <div class="w-full flex flex-col sm:flex-row gap-4 items-center justify-between border-t border-[#f1e3d6] pt-4">
+                        <div class="text-left">
+                            <p class="text-xs text-[#8c7466]">已成功連線的幸福貴賓：</p>
+                            <p class="text-2xl font-black text-[#aa7c11]"><span id="lobby-count">0</span> <span class="text-xs font-normal">位</span></p>
+                        </div>
+                        <button id="btn-start-game" class="px-8 py-4 gold-btn text-base font-bold rounded-xl tracking-wider uppercase transition">
+                            <i class="fa-solid fa-play mr-2"></i> 啟動幸福問答
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 右側：巨型 QR Code 掃碼加入區 -->
+                <div class="lg:col-span-6 flex flex-col items-center justify-center p-6 bg-white/70 rounded-2xl border border-[#e2c7b2] shadow-inner text-center">
+                    <span class="text-sm font-semibold tracking-wider gold-text uppercase mb-2">Join the Game</span>
+                    <h3 class="text-xl font-bold text-[#5c4a42] mb-4">📱 掃描 QR Code 立即參與答題</h3>
+                    <div id="qrcode-canvas" class="bg-white p-6 rounded-2xl shadow-lg border border-[#e2c7b2] mb-4 transform transition hover:scale-102"></div>
+                    <p id="room-url-display" class="text-xs text-[#8c7466] break-all select-all font-mono max-w-sm"></p>
+                </div>
             </div>
-          </div>
+
+            <!-- 階段二：題目進行中 (Quiz Mode) -->
+            <div id="master-quiz" class="hidden flex flex-col gap-6">
+                <!-- 題號與作答統計 -->
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-center bg-[#fbf4ee]/70 p-5 rounded-2xl border border-[#e2c7b2]">
+                    <div class="md:col-span-2 text-center md:text-left">
+                        <span id="quiz-question-index" class="text-3xl font-black gold-text font-serif">Q1</span>
+                    </div>
+                    <div class="md:col-span-7">
+                        <h2 id="quiz-question-title" class="text-xl md:text-2xl font-bold text-[#5c4a42]">題目載入中...</h2>
+                    </div>
+                    <div class="md:col-span-3 flex justify-center md:justify-end gap-4">
+                        <div class="text-center bg-white px-4 py-2 rounded-xl border border-[#f1e3d6]">
+                            <span class="text-xs text-[#8c7466] block">已答題賓客</span>
+                            <span class="text-lg font-bold text-[#aa7c11]"><span id="quiz-submit-count">0</span> <span class="text-xs text-gray-400">/ <span id="quiz-total-players">0</span>人</span></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 動態倒數計時條 -->
+                <div class="w-full bg-gray-100 rounded-full h-3 overflow-hidden border border-[#e2c7b2]/50">
+                    <div id="quiz-progress-bar" class="bg-gradient-to-r from-[#e2c7b2] to-[#aa7c11] h-full transition-all duration-1000 ease-linear" style="width: 100%"></div>
+                </div>
+
+                <!-- 四個選項顯示 -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div id="option-box-0" class="p-5 bg-white border-2 border-gray-100 rounded-2xl flex items-center gap-4 transition-all duration-300">
+                        <span class="w-10 h-10 rounded-full bg-[#fbf4ee] text-[#aa7c11] font-bold flex items-center justify-center text-lg">A</span>
+                        <span id="option-text-0" class="text-lg font-medium text-[#5c4a42]">選項 A</span>
+                    </div>
+                    <div id="option-box-1" class="p-5 bg-white border-2 border-gray-100 rounded-2xl flex items-center gap-4 transition-all duration-300">
+                        <span class="w-10 h-10 rounded-full bg-[#fbf4ee] text-[#aa7c11] font-bold flex items-center justify-center text-lg">B</span>
+                        <span id="option-text-1" class="text-lg font-medium text-gray-700">選項 B</span>
+                    </div>
+                    <div id="option-box-2" class="p-5 bg-white border-2 border-gray-100 rounded-2xl flex items-center gap-4 transition-all duration-300">
+                        <span class="w-10 h-10 rounded-full bg-[#fbf4ee] text-[#aa7c11] font-bold flex items-center justify-center text-lg">C</span>
+                        <span id="option-text-2" class="text-lg font-medium text-gray-700">選項 C</span>
+                    </div>
+                    <div id="option-box-3" class="p-5 bg-white border-2 border-gray-200 rounded-2xl flex items-center gap-4 transition-all duration-300">
+                        <span class="w-10 h-10 rounded-full bg-[#fbf4ee] text-[#aa7c11] font-bold flex items-center justify-center text-lg">D</span>
+                        <span id="option-text-3" class="text-lg font-medium text-gray-700">選項 D</span>
+                    </div>
+                </div>
+
+                <!-- 新人Q版互動動畫 + 故事公布區 -->
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center bg-white/50 p-4 rounded-2xl border border-[#e2c7b2]/50">
+                    <div class="lg:col-span-4 flex justify-center">
+                        <div id="couple-svg-quiz" class="w-64 h-36"></div>
+                    </div>
+                    <div class="lg:col-span-8">
+                        <div id="explanation-box" class="hidden p-4 bg-[#fbf4ee] rounded-xl border border-[#e2c7b2] animate-fade-in">
+                            <span class="text-xs font-bold gold-text uppercase tracking-widest block mb-1">❤️ 幸福幕後絮語</span>
+                            <p id="explanation-text" class="text-sm text-[#8c7466] leading-relaxed italic"></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 主控操作列 -->
+                <div class="flex justify-between items-center border-t border-[#f1e3d6] pt-4">
+                    <div id="countdown-wrapper" class="flex items-center gap-2">
+                        <i class="fa-solid fa-clock gold-text text-lg"></i>
+                        <span id="quiz-countdown" class="text-base font-semibold text-[#8c7466]">倒數 20 秒</span>
+                    </div>
+                    <div class="flex gap-4">
+                        <button id="btn-show-answer" class="px-6 py-3 gold-btn text-sm font-bold rounded-xl shadow-md transition">
+                            <i class="fa-solid fa-eye mr-2"></i> 公布正確答案
+                        </button>
+                        <button id="btn-next-question" class="hidden px-6 py-3 bg-[#5c4a42] hover:bg-[#4a3a33] text-white text-sm font-bold rounded-xl shadow-md transition">
+                            進入下一題 <i class="fa-solid fa-arrow-right ml-2"></i>
+                        </button>
+                        <button id="btn-show-ranking" class="hidden px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-bold rounded-xl shadow-md transition">
+                            <i class="fa-solid fa-trophy mr-2"></i> 揭曉前 10 排行榜
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 階段三：最終排行榜 (Leaderboard) -->
+            <div id="master-ranking" class="hidden flex flex-col items-center gap-6">
+                <div class="text-center">
+                    <span class="text-5xl">🏆</span>
+                    <h2 class="serif-title text-3xl font-extrabold text-[#5c4a42] mt-2">幸福十強排行榜</h2>
+                    <p class="text-[#8c7466] text-sm mt-1">感謝以下最熟悉 昶瑋 & 俞蕙 的超級好友們！</p>
+                </div>
+
+                <div class="w-full max-w-2xl bg-white/70 rounded-2xl p-6 border border-[#e2c7b2] shadow-lg flex flex-col gap-4">
+                    <!-- 新人Q版謝幕 -->
+                    <div class="flex justify-center pb-4 border-b border-[#f1e3d6]">
+                        <div id="couple-svg-ranking" class="w-64 h-36"></div>
+                    </div>
+
+                    <!-- 1-10 名名單 -->
+                    <div class="flex flex-col gap-2 max-h-[300px] overflow-y-auto pr-1" id="ranking-list">
+                        <!-- 動態插入 -->
+                    </div>
+                </div>
+
+                <div class="flex gap-4">
+                    <button id="btn-restart-game" class="px-6 py-3 bg-red-100 hover:bg-red-200 text-red-700 font-bold rounded-xl transition">
+                        <i class="fa-solid fa-rotate-left mr-2"></i> 重新開始遊戲
+                    </button>
+                </div>
+            </div>
         </div>
 
-        <div
-          id="screen-game"
-          class="w-full ppt-card rounded-3xl p-6 md:p-8 transition-all transform duration-500 scale-95 hidden flex flex-col lg:flex-row gap-6"
-        >
-          <!-- 左側：新人Q版動態情緒反應 -->
-          <div
-            class="lg:w-1/4 flex lg:flex-col justify-around lg:justify-center items-center gap-4 lg:gap-8 bg-white/40 p-4 rounded-2xl border border-amber-100"
-          >
-            <div class="flex flex-col items-center">
-              <div
-                id="game-groom-char"
-                class="w-24 md:w-36 q-char-breathe"
-              ></div>
-              <div class="mt-2 text-center">
-                <span
-                  id="game-groom-name"
-                  class="font-bold text-slate-700 text-sm md:text-base"
-                  >新郎</span
-                >
-                <div
-                  id="groom-emotion-bubble"
-                  class="hidden text-xs bg-sky-50 text-sky-800 border border-sky-100 px-2 py-1 rounded-lg mt-1 shadow-sm max-w-[120px]"
-                >
-                  作答中...
+        <!-- ================= 賓客端 (Guest UI) ================= -->
+        <div id="screen-guest" class="hidden w-full max-w-md bg-white/95 backdrop-blur-md rounded-3xl shadow-2xl p-6 border border-[#e2c7b2] flex flex-col gap-6">
+            
+            <!-- 賓客端標頭 -->
+            <div class="text-center border-b border-[#f1e3d6] pb-4">
+                <span class="text-xs font-bold gold-text tracking-widest block uppercase font-serif">Wedding Guest Portal</span>
+                <div class="flex items-center justify-center gap-2 mt-1">
+                    <span id="guest-my-name" class="font-bold text-[#5c4a42]">尚未登入</span>
+                    <span id="guest-my-score" class="text-xs bg-[#fbf4ee] text-[#aa7c11] border border-[#e2c7b2]/50 px-2 py-0.5 rounded-full font-bold">0 pt</span>
                 </div>
-              </div>
             </div>
 
-            <div class="w-[1px] h-12 lg:w-full lg:h-[1px] bg-amber-100"></div>
-
-            <div class="flex flex-col items-center">
-              <div
-                id="game-bride-char"
-                class="w-24 md:w-36 q-char-breathe"
-              ></div>
-              <div class="mt-2 text-center">
-                <span
-                  id="game-bride-name"
-                  class="font-bold text-slate-700 text-sm md:text-base"
-                  >新娘</span
-                >
-                <div
-                  id="bride-emotion-bubble"
-                  class="hidden text-xs bg-rose-50 text-rose-800 border border-rose-100 px-2 py-1 rounded-lg mt-1 shadow-sm max-w-[120px]"
-                >
-                  作答中...
+            <!-- 賓客登入登錄區 (Login) -->
+            <div id="guest-login" class="flex flex-col gap-4">
+                <div class="text-center py-4">
+                    <span class="text-4xl animate-bounce inline-block">✉️</span>
+                    <h2 class="text-lg font-bold text-[#5c4a42] mt-2">請輸入您的祝福暱稱</h2>
+                    <p class="text-xs text-[#8c7466] mt-1">此名稱將會即時顯示在大螢幕的名單與排行榜上</p>
                 </div>
-              </div>
-            </div>
-          </div>
+                
+                <!-- 新人Q版新人圖形 -->
+                <div class="w-full flex justify-center py-2">
+                    <div id="couple-svg-login" class="w-64 h-32"></div>
+                </div>
 
-          <!-- 右側：主簡報問答區 -->
-          <div class="flex-grow flex flex-col justify-between min-h-[480px]">
-            <div>
-              <!-- 分類與題號 -->
-              <div
-                class="flex justify-between items-center pb-4 border-b border-amber-100/60"
-              >
+                <input type="text" id="input-guest-name" placeholder="例如：超帥伴郎阿明、俞蕙大學閨蜜" class="w-full px-4 py-3 rounded-xl border border-[#e2c7b2] focus:outline-none focus:ring-2 focus:ring-[#aa7c11] text-center text-lg font-semibold bg-[#fbf4ee]/30" maxlength="12">
+                <button id="btn-join-wedding" class="w-full py-4 gold-btn text-base font-bold rounded-xl shadow-lg transition">
+                    幸福登入進場
+                </button>
+            </div>
+
+            <!-- 賓客等待大廳 (Waiting Screen - Cute and interactive) -->
+            <div id="guest-waiting" class="hidden text-center py-8 flex flex-col items-center gap-4">
+                <div class="w-16 h-16 rounded-full bg-[#fbf4ee] text-[#aa7c11] border border-[#e2c7b2] flex items-center justify-center text-2xl animate-pulse">
+                    <i class="fa-solid fa-hourglass-half"></i>
+                </div>
                 <div>
-                  <span
-                    id="badge-category"
-                    class="px-3 py-1 bg-[#b8962e] text-white rounded-full text-xs font-bold mr-2 tracking-wider"
-                    >類別</span
-                  >
-                  <span class="text-sm font-bold text-slate-400 font-serif-eng"
-                    >QUESTION <span id="text-current-num">1</span> /
-                    <span id="text-total-num">10</span></span
-                  >
+                    <h2 class="text-lg font-bold text-[#5c4a42]">已成功進入婚禮派對！</h2>
+                    <p class="text-sm text-[#8c7466] mt-1">抬頭看看，大螢幕上已經有你的名字囉！<br>靜待主持人啟動答題...</p>
                 </div>
-                <div class="text-xs text-slate-500 font-bold">
-                  已答題賓客：<span
-                    id="submitted-answers-count"
-                    class="text-rose-600 font-black text-sm"
-                    >0</span
-                  >
-                  /
-                  <span id="total-active-players" class="text-slate-600"
-                    >0</span
-                  >
+                
+                <div id="couple-svg-wait" class="w-64 h-32"></div>
+
+                <div class="w-full bg-[#fbf4ee]/80 p-4 rounded-xl border border-[#e2c7b2]">
+                    <span class="text-xs gold-text font-bold block tracking-wider mb-1">💍 幸福語錄</span>
+                    <p id="wedding-quote" class="text-xs text-[#8c7466] italic leading-relaxed"></p>
                 </div>
-              </div>
-
-              <!-- 倒數計時條 -->
-              <div
-                class="w-full bg-slate-100 h-2 rounded-full overflow-hidden mt-3 relative"
-              >
-                <div
-                  id="timer-progress"
-                  class="bg-gradient-to-r from-amber-400 to-rose-400 h-full w-full timer-transition"
-                ></div>
-              </div>
-
-              <!-- 題目內容 -->
-              <div class="my-6">
-                <h2
-                  id="text-question"
-                  class="text-xl md:text-2xl lg:text-3xl font-black text-slate-800 leading-relaxed tracking-wide"
-                >
-                  題目載入中...
-                </h2>
-              </div>
-
-              <!-- 選項列表 -->
-              <div
-                id="options-grid"
-                class="grid grid-cols-1 md:grid-cols-2 gap-4 my-4"
-              >
-                <!-- 1 to 4 選項由JS動態生成 -->
-              </div>
             </div>
 
-            <!-- 故事彈出卡 -->
-            <div
-              id="story-card"
-              class="hidden bg-[#faf6f0] border border-[#d4af37]/30 rounded-2xl p-4 md:p-6 my-4 shadow-inner relative overflow-hidden"
-            >
-              <h4
-                class="text-[#b8962e] font-black text-sm flex items-center gap-1.5 mb-2"
-              >
-                <i data-lucide="sparkles" class="w-4 h-4"></i>
-                愛情幕後故事
-              </h4>
-              <p
-                id="text-story"
-                class="text-slate-700 text-sm md:text-base leading-relaxed"
-              >
-                故事內容
-              </p>
+            <!-- 賓客作答區 (Quiz Choice) -->
+            <div id="guest-quiz" class="hidden flex flex-col gap-4">
+                <div class="text-center py-2">
+                    <div class="flex justify-between items-center px-1">
+                        <span id="guest-question-index" class="text-sm font-bold bg-[#aa7c11] text-white px-2.5 py-1 rounded-lg">Q1</span>
+                        <span id="guest-quiz-timer" class="text-sm font-semibold gold-text">倒數 20 秒</span>
+                    </div>
+                    <p id="guest-question-title" class="text-base font-bold text-[#5c4a42] mt-2 text-left leading-relaxed">載入題目中...</p>
+                </div>
+
+                <!-- 答題按鈕 -->
+                <div class="flex flex-col gap-3" id="guest-options-container">
+                    <button onclick="submitAnswer(0)" id="guest-btn-0" class="w-full p-4 bg-white hover:bg-[#fbf4ee]/30 border border-[#e2c7b2] active:bg-[#fbf4ee]/50 rounded-xl flex items-center gap-4 transition text-left">
+                        <span class="w-8 h-8 rounded-full bg-red-100 text-red-600 font-bold flex items-center justify-center">A</span>
+                        <span id="guest-option-text-0" class="font-semibold text-[#5c4a42]">選項 A</span>
+                    </button>
+                    <button onclick="submitAnswer(1)" id="guest-btn-1" class="w-full p-4 bg-white hover:bg-[#fbf4ee]/30 border border-[#e2c7b2] active:bg-[#fbf4ee]/50 rounded-xl flex items-center gap-4 transition text-left">
+                        <span class="w-8 h-8 rounded-full bg-blue-100 text-blue-600 font-bold flex items-center justify-center">B</span>
+                        <span id="guest-option-text-1" class="font-semibold text-[#5c4a42]">選項 B</span>
+                    </button>
+                    <button onclick="submitAnswer(2)" id="guest-btn-2" class="w-full p-4 bg-white hover:bg-[#fbf4ee]/30 border border-[#e2c7b2] active:bg-[#fbf4ee]/50 rounded-xl flex items-center gap-4 transition text-left">
+                        <span class="w-8 h-8 rounded-full bg-green-100 text-green-600 font-bold flex items-center justify-center">C</span>
+                        <span id="guest-option-text-2" class="font-semibold text-[#5c4a42]">選項 C</span>
+                    </button>
+                    <button onclick="submitAnswer(3)" id="guest-btn-3" class="w-full p-4 bg-white hover:bg-[#fbf4ee]/30 border border-[#e2c7b2] active:bg-[#fbf4ee]/50 rounded-xl flex items-center gap-4 transition text-left">
+                        <span class="w-8 h-8 rounded-full bg-yellow-100 text-yellow-600 font-bold flex items-center justify-center">D</span>
+                        <span id="guest-option-text-3" class="font-semibold text-[#5c4a42]">選項 D</span>
+                    </button>
+                </div>
             </div>
 
-            <!-- 控制與下一題按鈕 -->
-            <div
-              class="flex justify-between items-center pt-4 border-t border-amber-100/60"
-            >
-              <span
-                class="text-xs font-bold text-[#b8962e] tracking-widest uppercase"
-                >Love Story Quiz</span
-              >
-              <div class="flex gap-2">
-                <button
-                  id="btn-reveal"
-                  onclick="hostRevealAnswer()"
-                  class="px-6 py-3 bg-amber-50 hover:bg-amber-100 text-[#b8962e] font-bold rounded-xl border border-[#d4af37]/50 flex items-center gap-1.5 transition-all"
-                >
-                  <i data-lucide="eye" class="w-4 h-4"></i>
-                  提前揭曉
-                </button>
-                <button
-                  id="btn-next"
-                  onclick="hostNextQuestion()"
-                  class="px-6 py-3 gold-gradient-bg text-white font-bold rounded-xl shadow-md hover:opacity-90 flex items-center gap-1 transition-all"
-                  disabled
-                >
-                  下一題
-                  <i data-lucide="chevron-right" class="w-4.5 h-4.5"></i>
-                </button>
-              </div>
+            <!-- 賓客作答回饋 (Submit Feedback) -->
+            <div id="guest-feedback" class="hidden text-center py-12 flex flex-col items-center gap-4">
+                <div class="w-16 h-16 rounded-full bg-[#fbf4ee] text-indigo-500 border border-[#e2c7b2] flex items-center justify-center text-3xl animate-pulse">
+                    <i class="fa-solid fa-paper-plane"></i>
+                </div>
+                <div>
+                    <h2 class="text-lg font-bold text-[#5c4a42]">已送出答案！</h2>
+                    <p id="feedback-desc" class="text-xs text-[#8c7466] mt-1">您已鎖定選擇，請抬頭觀看主螢幕揭曉正解。</p>
+                </div>
+                <div id="couple-svg-feedback" class="w-64 h-32"></div>
             </div>
-          </div>
-        </div>
 
-        <div
-          id="screen-result"
-          class="w-full ppt-card rounded-3xl p-8 md:p-12 transition-all transform duration-500 scale-95 hidden flex flex-col items-center"
-        >
-          <div
-            class="text-[#b8962e] font-serif-eng text-xl mb-1 tracking-widest italic"
-          >
-            Happy Ever After
-          </div>
-          <h2
-            id="result-title"
-            class="text-3xl md:text-4xl font-black text-slate-800 mb-6"
-          >
-            完美落幕，幸福啟航 🎉
-          </h2>
-
-          <!-- 慶祝紙花畫布 -->
-          <canvas
-            id="confetti-canvas"
-            class="absolute inset-0 pointer-events-none z-0 rounded-3xl"
-          ></canvas>
-
-          <div
-            class="flex justify-center items-center gap-4 my-2 z-10 relative"
-          >
-            <div id="result-groom-svg" class="w-20 q-char-happy"></div>
-            <div class="text-[#b8962e] text-3xl font-serif-eng">♥</div>
-            <div id="result-bride-svg" class="w-20 q-char-happy"></div>
-          </div>
-
-          <!-- 排名榜前 10 名 -->
-          <div
-            class="w-full max-w-2xl bg-white/60 rounded-2xl p-6 border border-amber-100/50 my-6 z-10 relative"
-          >
-            <h3
-              class="font-black text-slate-800 text-lg mb-4 flex items-center justify-center gap-2 text-[#b8962e]"
-            >
-              <i
-                data-lucide="trophy"
-                class="w-5 h-5 text-amber-500 animate-bounce"
-              ></i>
-              賓客互動榮譽榜（前 10 名）
-            </h3>
-
-            <div
-              id="leaderboard-list"
-              class="space-y-2 max-h-[320px] overflow-y-auto pr-1"
-            >
-              <!-- 排行榜動態插入 -->
+            <!-- 賓客結算與揭曉畫面 (Round Result) -->
+            <div id="guest-result" class="hidden text-center py-6 flex flex-col items-center gap-4">
+                <div id="result-status-icon" class="w-16 h-16 rounded-full flex items-center justify-center text-3xl shadow-md">
+                    🎉
+                </div>
+                <div>
+                    <h2 id="result-status-title" class="text-lg font-bold text-[#5c4a42]">答對囉！</h2>
+                    <p id="result-status-score" class="text-sm gold-text font-bold mt-1">目前得分: +0 pt</p>
+                    <p id="result-correct-answer" class="text-xs text-[#8c7466] mt-2 font-bold"></p>
+                </div>
+                <div id="couple-svg-result" class="w-64 h-32"></div>
+                <div class="w-full bg-[#fbf4ee] p-4 rounded-xl border border-[#e2c7b2]">
+                    <p id="guest-result-explanation" class="text-xs text-[#8c7466] leading-relaxed italic"></p>
+                </div>
+                <p class="text-xs text-[#8c7466] animate-pulse">靜待主持人切換下一題...</p>
             </div>
-          </div>
 
-          <!-- 重置遊戲 -->
-          <button
-            onclick="hostResetGame()"
-            class="px-8 py-3 bg-white border border-amber-200 hover:bg-slate-50 text-slate-600 font-bold rounded-xl shadow-sm transition-all z-10 relative flex items-center gap-2 text-sm"
-          >
-            <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
-            重新開始新遊戲
-          </button>
-        </div>
-      </div>
-
-      <!-- ================= 賓客手機端 (GUEST VIEW) ================= -->
-      <div id="guest-view" class="hidden w-full max-w-md">
-        <div
-          id="guest-screen-login"
-          class="w-full ppt-card rounded-2xl p-6 md:p-8 flex flex-col items-center"
-        >
-          <div
-            class="text-[#b8962e] font-serif-eng text-lg mb-1 tracking-widest"
-          >
-            Welcome
-          </div>
-          <h2
-            class="text-2xl font-black text-slate-800 tracking-wider mb-2 text-center"
-            id="guest-welcome-title"
-          >
-            婚禮互動連線答題
-          </h2>
-          <div class="h-[1px] w-24 bg-[#d4af37]/40 my-4"></div>
-
-          <p class="text-xs text-slate-400 text-center mb-6 leading-relaxed">
-            歡迎光臨新人的神聖婚禮！請在下方輸入您的親友暱稱，即可在遊戲開始時與大螢幕進行即時作答。
-          </p>
-
-          <!-- 暱稱輸入框 -->
-          <div class="w-full space-y-4">
-            <div>
-              <label class="block text-xs font-bold text-slate-500 mb-1.5"
-                >您的專屬暱稱（限 10 字以內）</label
-              >
-              <input
-                type="text"
-                id="input-nickname"
-                maxlength="10"
-                placeholder="例如：伴娘小美、新郎大學死黨"
-                class="w-full p-4 border border-amber-200/60 focus:border-[#d4af37] focus:ring-1 focus:ring-[#d4af37] rounded-xl text-sm focus:outline-none bg-white shadow-inner"
-              />
+            <!-- 賓客終局畫面 (Game Over) -->
+            <div id="guest-game-over" class="hidden text-center py-8 flex flex-col items-center gap-4">
+                <div class="text-5xl animate-bounce">👑</div>
+                <div>
+                    <h2 class="text-lg font-bold text-[#5c4a42]">本局遊戲精彩落幕！</h2>
+                    <p class="text-xs text-[#8c7466] mt-1">感謝您熱烈參與 昶瑋 & 俞蕙 的愛情歷程問答</p>
+                </div>
+                <div class="bg-[#fbf4ee] border border-[#e2c7b2] p-4 rounded-xl w-full max-w-xs">
+                    <span class="text-xs text-[#8c7466] block">您的最終得分</span>
+                    <span id="guest-final-score" class="text-3xl font-black gold-text">0 pt</span>
+                </div>
+                <div id="couple-svg-over" class="w-64 h-32"></div>
+                <p class="text-xs text-[#8c7466] mt-2">請觀看投影幕，<br>看看您是否有榮登「幸福榜單」前十強！</p>
             </div>
-            <button
-              onclick="guestLogin()"
-              class="w-full py-4 gold-gradient-bg text-white font-black rounded-xl shadow-md hover:opacity-95 transition-all text-sm tracking-widest flex items-center justify-center gap-2"
-            >
-              <i
-                data-lucide="heart"
-                class="w-4.5 h-4.5 fill-current animate-pulse"
-              ></i>
-              進入婚禮遊戲
-            </button>
-          </div>
         </div>
-
-        <div
-          id="guest-screen-waiting"
-          class="w-full ppt-card rounded-2xl p-8 flex flex-col items-center text-center hidden"
-        >
-          <div
-            class="w-20 h-20 rounded-full bg-rose-50 border border-rose-100 flex items-center justify-center mb-6 heart-pulse shadow-sm"
-          >
-            <i
-              data-lucide="heart"
-              class="w-10 h-10 text-rose-400 fill-current"
-            ></i>
-          </div>
-
-          <h3 class="text-xl font-black text-slate-800 mb-2">
-            已成功進入婚禮大廳
-          </h3>
-          <p class="text-sm text-[#b8962e] font-bold">
-            哈囉，<span id="wait-guest-name">暱稱</span>！
-          </p>
-
-          <div class="h-[1px] w-16 bg-amber-100 my-4 mx-auto"></div>
-
-          <p class="text-xs text-slate-400 leading-relaxed max-w-xs">
-            請抬頭看大螢幕，靜待主持人點擊「開始遊戲」。遊戲開始後，您的手機畫面會立刻同步轉換為答題選項！
-          </p>
-        </div>
-
-        <div
-          id="guest-screen-play"
-          class="w-full ppt-card rounded-2xl p-6 flex flex-col hidden"
-        >
-          <!-- 頂部資訊 -->
-          <div
-            class="flex justify-between items-center pb-3 border-b border-amber-100/60 mb-4"
-          >
-            <span class="text-xs font-bold text-slate-400"
-              >當前積分：<span
-                id="guest-score-badge"
-                class="text-[#b8962e] text-sm font-black"
-                >0</span
-              >
-              分</span
-            >
-            <span
-              class="text-xs font-bold text-slate-400 font-serif-eng"
-              id="guest-q-num"
-              >Q 1</span
-            >
-          </div>
-
-          <!-- 手機端題目預覽 -->
-          <div class="mb-4">
-            <div
-              class="inline-block px-2.5 py-0.5 bg-amber-50 text-[#b8962e] text-[10px] rounded-full border border-amber-100 mb-1.5 font-bold"
-              id="guest-q-category"
-            >
-              暖身題
-            </div>
-            <p
-              class="text-slate-700 font-bold text-sm leading-relaxed"
-              id="guest-q-title"
-            >
-              題目同步中...
-            </p>
-          </div>
-
-          <!-- 作答選項 -->
-          <div id="guest-options-container" class="space-y-3">
-            <!-- A, B, C, D 觸控按鈕由JS生成 -->
-          </div>
-
-          <!-- 鎖定/送出後等候狀態 -->
-          <div
-            id="guest-submitted-box"
-            class="hidden text-center py-6 bg-slate-50 rounded-xl border border-dashed border-amber-200 mt-4 animate-pulse"
-          >
-            <i
-              data-lucide="hourglass"
-              class="w-6 h-6 text-[#b8962e] mx-auto mb-2 animate-spin"
-            ></i>
-            <p class="text-xs text-slate-500 font-bold">
-              已成功送出答案，靜待大螢幕時間揭曉！
-            </p>
-          </div>
-
-          <!-- 本回合結果反饋 -->
-          <div
-            id="guest-feedback-box"
-            class="hidden text-center py-5 rounded-xl border mt-4"
-          >
-            <div id="guest-feedback-icon" class="mb-1"></div>
-            <h4 id="guest-feedback-title" class="font-black text-sm mb-1">
-              對錯反饋
-            </h4>
-            <p id="guest-feedback-desc" class="text-xs text-slate-400"></p>
-          </div>
-        </div>
-
-        <div
-          id="guest-screen-result"
-          class="w-full ppt-card rounded-2xl p-8 flex flex-col items-center text-center hidden"
-        >
-          <div
-            class="w-16 h-16 rounded-full bg-amber-50 border border-amber-100 flex items-center justify-center mb-4 shadow-sm"
-          >
-            <i data-lucide="award" class="w-8 h-8 text-[#b8962e]"></i>
-          </div>
-
-          <h3 class="text-lg font-black text-slate-800 mb-1">
-            恭喜您完成所有挑戰！
-          </h3>
-          <p class="text-xs text-[#b8962e] font-bold">
-            辛苦了，<span id="result-guest-name">暱稱</span>
-          </p>
-
-          <div class="h-[1px] w-16 bg-amber-100 my-4 mx-auto"></div>
-
-          <div
-            class="p-4 bg-slate-50 rounded-xl border border-amber-100/60 w-full mb-6"
-          >
-            <span class="text-xs text-slate-400 font-bold block mb-1"
-              >您的最終成績</span
-            >
-            <span
-              id="guest-final-score"
-              class="text-3xl font-serif-eng font-black text-rose-500"
-              >0</span
-            >
-            <span class="text-xs text-slate-400">分</span>
-          </div>
-
-          <p class="text-xs text-slate-400 leading-relaxed">
-            請抬頭看向投影大螢幕！看看您是否登上了今天的「前十強榮譽排行榜」！再次祝福新婚快樂、幸福美滿！🌹
-          </p>
-        </div>
-      </div>
     </main>
 
-    <!-- 底部版權 -->
-    <footer class="text-center py-4 text-[10px] text-slate-400 z-10 relative">
-      Our Love Story ‧ Wedding Interaction Game
+    <!-- 頁尾聲明與設定紐 -->
+    <footer class="p-4 flex justify-between items-center bg-white/40 backdrop-blur-sm border-t border-[#f1e3d6] text-xs text-[#8c7466] z-10 relative">
+        <div>© 2026 昶瑋 & 俞蕙 婚禮籌備小組. All Rights Reserved.</div>
+        <button id="btn-open-config" class="px-3 py-1.5 bg-[#5c4a42] hover:bg-[#4a3a33] text-white rounded-lg flex items-center gap-1 transition">
+            <i class="fa-solid fa-gear"></i> ⚙️ 設定連線資料庫
+        </button>
     </footer>
 
-    <script type="module">
-      // Firebase JS SDK
-      import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-      import {
-        getAuth,
-        signInAnonymously,
-        signInWithCustomToken,
-        onAuthStateChanged,
-      } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-      import {
-        getFirestore,
-        doc,
-        getDoc,
-        setDoc,
-        updateDoc,
-        deleteDoc,
-        onSnapshot,
-        collection,
-        query,
-        getDocs,
-      } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-
-      // ============================================================
-      // 婚禮遊戲主設定檔 (WEDDING CONFIG) - 可在此輕鬆自訂題目、姓名等
-      // ============================================================
-      const WEDDING_CONFIG = {
-        groomName: "昶瑋", // 新郎姓名
-        brideName: "俞蕙", // 新娘姓名
-        countdownSeconds: 15, // 答題時間 (秒)
-        questions: [
-          {
-            category: "暖身送分題",
-            question: "請問今天婚禮現場，全宇宙最美麗動人的女主角是誰？",
-            options: [
-              "現場所有的女賓客",
-              "新娘的好閨蜜",
-              "今天最亮眼的新娘",
-              "新郎心目中的岳母",
-            ],
-            answerIndex: 2,
-            story:
-              "正確答案就是今天的新娘！她為了今天付出了許多心思準備，是絕對的唯一女主角✨",
-          },
-          {
-            category: "初次約會",
-            question: "請問新郎與新娘的「第一次約會」是在哪裡？",
-            options: [
-              "浪漫的深夜電影院",
-              "氣氛優雅的高級西餐廳",
-              "巷口一間不起眼的陽春麵攤",
-              "刺激好玩的主題遊樂園",
-            ],
-            answerIndex: 2,
-            story:
-              "看似平淡的起點最浪漫！第一次約會其實是去吃愛店麵攤。新郎當時緊張到把蛋花湯翻倒在襯衫上，這份憨厚卻深深打動了新娘呢！",
-          },
-          {
-            category: "愛情長跑",
-            question: "新人在交往的這幾年中，到底是誰先「暈船」並主動告白的？",
-            options: [
-              "新郎（暈到不行，直接直球對決）",
-              "新娘（默默佈局，手到擒來）",
-              "兩人一見蹤情，同時牽手",
-              "媒人婆/死黨好友在背後猛力推一把",
-            ],
-            answerIndex: 0,
-            story:
-              "是新郎先深深淪陷！新郎廷宇單戀了近半年，每天送愛心早餐，最後在跨年夜的璀璨煙火下，鼓起勇氣送上親手織的圍巾告白才成功！",
-          },
-          {
-            category: "日常爆料",
-            question: "請問新郎手機裡給新娘的「專屬甜蜜聯絡人備註」是什麼？",
-            options: [
-              "我家那隻暴躁小獅子 🦁",
-              "宇宙無敵傲嬌小仙女 🧚‍♀️",
-              "餵食我的人類主人 🍖",
-              "老婆大人 ❤️",
-            ],
-            answerIndex: 1,
-            story:
-              "新郎生存意志極強，備註是「宇宙無敵傲嬌小仙女」！不過私底下偶爾還是會偷偷在心裡叫「小獅子」就是了（嘘...）。",
-          },
-          {
-            category: "現場觀察",
-            question: "請在場嘉賓精準觀察，新郎與新娘的「身高差」是多少公分？",
-            options: [
-              "差 5 公分（肩並肩好依偎）",
-              "差 12 公分（完美的擁抱身高差）",
-              "差 18 公分（拿櫃子高處最方便）",
-              "穿上10公分高跟鞋後根本沒差",
-            ],
-            answerIndex: 2,
-            story:
-              "新郎 181 公分，新娘 163 公分，剛好相差 18 公分！這也是最完美的黃金依靠比例！",
-          },
-        ],
-      };
-
-      // Firebase 連線參數與 ID
-      const appId =
-        typeof __app_id !== "undefined" ? __app_id : "wedding-quiz-classic-ppt";
-      const firebaseConfig =
-        typeof __firebase_config !== "undefined"
-          ? JSON.parse(__firebase_config)
-          : {
-              apiKey: "mock-key",
-              authDomain: "mock-domain",
-              projectId: "mock-project",
-              storageBucket: "mock-bucket",
-              messagingSenderId: "mock-sender",
-              appId: "mock-app",
-            };
-
-      // 初始化 Firebase
-      const app = initializeApp(firebaseConfig);
-      const db = getFirestore(app);
-      const auth = getAuth(app);
-
-      // ==========================================
-      // 本地變數與狀態
-      // ==========================================
-      let userRole = "host"; // 'host' | 'guest'
-      let myUserId = "";
-      let myNickname = "";
-      let isSoundEnabled = true;
-      let localTimerInterval = null;
-
-      // Firestore 文件與集合路徑 (遵循 RULE 1 - Strict Paths)
-      const stateDocRef = doc(
-        db,
-        "artifacts",
-        appId,
-        "public",
-        "data",
-        "gameState",
-        "current",
-      );
-      const playersColRef = collection(
-        db,
-        "artifacts",
-        appId,
-        "public",
-        "data",
-        "players",
-      );
-
-      // ==========================================
-      // 網頁載入初始化
-      // ==========================================
-      window.onload = async function () {
-        lucide.createIcons();
-        createPetals();
-
-        // 解析 URL 角色 (?role=guest)
-        const urlParams = new URLSearchParams(window.location.search);
-        if (
-          urlParams.get("role") === "guest" ||
-          window.location.hash === "#guest"
-        ) {
-          userRole = "guest";
-          document.getElementById("guest-view").classList.remove("hidden");
-          document.getElementById("host-view").classList.add("hidden");
-          document.getElementById("guest-welcome-title").innerText =
-            `${WEDDING_CONFIG.groomName} ＆ ${WEDDING_CONFIG.brideName} 婚禮答題`;
-        } else {
-          userRole = "host";
-          document.getElementById("host-view").classList.remove("hidden");
-          document.getElementById("guest-view").classList.add("hidden");
-
-          // 主頁顯示設定
-          document.getElementById("host-wedding-title").innerText =
-            `${WEDDING_CONFIG.groomName} ＆ ${WEDDING_CONFIG.brideName} 婚禮互動遊戲`;
-          document.getElementById("label-groom-name").innerText =
-            `新郎 ${WEDDING_CONFIG.groomName} 🤵‍♂️`;
-          document.getElementById("label-bride-name").innerText =
-            `新娘 ${WEDDING_CONFIG.brideName} 👰‍♀️`;
-          document.getElementById("game-groom-name").innerText =
-            WEDDING_CONFIG.groomName;
-          document.getElementById("game-bride-name").innerText =
-            WEDDING_CONFIG.brideName;
-
-          renderCharacters();
-          generateQRCode();
-        }
-
-        await authenticateUser();
-      };
-
-      // 匿名登入
-      async function authenticateUser() {
-        try {
-          if (
-            typeof __initial_auth_token !== "undefined" &&
-            __initial_auth_token
-          ) {
-            await signInWithCustomToken(auth, __initial_auth_token);
-          } else {
-            await signInAnonymously(auth);
-          }
-
-          onAuthStateChanged(auth, (user) => {
-            if (user) {
-              myUserId = user.uid;
-              initRealtimeSync();
-            }
-          });
-        } catch (err) {
-          console.error("認證失敗", err);
-        }
-      }
-
-      // ==========================================
-      // QR Code 產生 (使用簡潔的無網憂 URL 搭配 guest 參數)
-      // ==========================================
-      function generateQRCode() {
-        // 獲取當前網址並附加角色
-        const currentUrl =
-          window.location.origin + window.location.pathname + "?role=guest";
-        const qrImg = document.getElementById("qr-image");
-        // 使用穩定開源的 QR Code API
-        qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(currentUrl)}`;
-        qrImg.onerror = () => {
-          // Fallback placeholder
-          qrImg.src = `https://placehold.co/300x300/faf6f0/b8962e?text=QR+Code`;
-        };
-      }
-
-      // ==========================================
-      // ==========================================
-      let currentGameState = null;
-      let allPlayersList = [];
-
-      function initRealtimeSync() {
-        if (!auth.currentUser) return;
-
-        // 1. 監聽遊戲主狀態
-        onSnapshot(
-          stateDocRef,
-          (snapshot) => {
-            if (snapshot.exists()) {
-              const data = snapshot.data();
-              currentGameState = data;
-              handleStateChange(data);
-            } else {
-              // 初始化主螢幕預設狀態 (僅 Host 可以寫入)
-              if (userRole === "host") {
-                setDoc(stateDocRef, {
-                  status: "lobby",
-                  currentQuestionIndex: 0,
-                  questionActive: false,
-                  timerEndTime: 0,
-                });
-              }
-            }
-          },
-          (error) => console.error("狀態監聽失敗", error),
-        );
-
-        // 2. 監聽玩家列表
-        onSnapshot(
-          query(playersColRef),
-          (snapshot) => {
-            allPlayersList = [];
-            snapshot.forEach((doc) => {
-              allPlayersList.push({ id: doc.id, ...doc.data() });
-            });
-
-            // 更新 UI
-            if (userRole === "host") {
-              updateLobbyPlayersUI();
-              updateSubmitCountUI();
-            }
-          },
-          (error) => console.error("玩家監聽失敗", error),
-        );
-      }
-
-      // ==========================================
-      // ==========================================
-      window.hostStartGame = async function () {
-        playSound("click");
-        if (!auth.currentUser) return;
-
-        // 1. 重設所有玩家分數與作答紀錄
-        for (const p of allPlayersList) {
-          await updateDoc(
-            doc(db, "artifacts", appId, "public", "data", "players", p.id),
-            {
-              score: 0,
-              answers: {},
-            },
-          );
-        }
-
-        // 2. 更新遊戲狀態至第一題
-        await updateDoc(stateDocRef, {
-          status: "playing",
-          currentQuestionIndex: 0,
-          questionActive: true,
-          timerEndTime: Date.now() + WEDDING_CONFIG.countdownSeconds * 1000,
-        });
-      };
-
-      // 主螢幕揭曉答案
-      window.hostRevealAnswer = async function () {
-        playSound("success");
-        if (!auth.currentUser) return;
-
-        await updateDoc(stateDocRef, {
-          questionActive: false,
-          timerEndTime: 0,
-        });
-      };
-
-      // 下一題或進入結算
-      window.hostNextQuestion = async function () {
-        playSound("click");
-        if (!auth.currentUser) return;
-
-        const nextIdx = currentGameState.currentQuestionIndex + 1;
-        if (nextIdx < WEDDING_CONFIG.questions.length) {
-          await updateDoc(stateDocRef, {
-            status: "playing",
-            currentQuestionIndex: nextIdx,
-            questionActive: true,
-            timerEndTime: Date.now() + WEDDING_CONFIG.countdownSeconds * 1000,
-          });
-        } else {
-          await updateDoc(stateDocRef, {
-            status: "ended",
-            questionActive: false,
-          });
-        }
-      };
-
-      // 重設遊戲回大廳
-      window.hostResetGame = async function () {
-        playSound("click");
-        if (!auth.currentUser) return;
-
-        await updateDoc(stateDocRef, {
-          status: "lobby",
-          currentQuestionIndex: 0,
-          questionActive: false,
-          timerEndTime: 0,
-        });
-      };
-
-      // ==========================================
-      // ==========================================
-      function handleStateChange(state) {
-        if (userRole === "host") {
-          renderHostState(state);
-        } else {
-          renderGuestState(state);
-        }
-      }
-
-      // 1. 渲染主螢幕 UI
-      function renderHostState(state) {
-        // 隱藏所有面板
-        document.getElementById("screen-welcome").classList.add("hidden");
-        document.getElementById("screen-game").classList.add("hidden");
-        document.getElementById("screen-result").classList.add("hidden");
-
-        if (state.status === "lobby") {
-          document.getElementById("screen-welcome").classList.remove("hidden");
-          renderCharacters("idle");
-          stopContinuousConfetti();
-        } else if (state.status === "playing") {
-          document.getElementById("screen-game").classList.remove("hidden");
-          loadHostQuestion(
-            state.currentQuestionIndex,
-            state.questionActive,
-            state.timerEndTime,
-          );
-        } else if (state.status === "ended") {
-          document.getElementById("screen-result").classList.remove("hidden");
-          renderCharacters("success");
-          renderLeaderboard();
-          startContinuousConfetti();
-        }
-      }
-
-      // 2. 渲染賓客手機 UI
-      function renderGuestState(state) {
-        if (!myNickname) {
-          // 如果還未登入，強制留在登入畫面
-          showGuestScreen("guest-screen-login");
-          return;
-        }
-
-        if (state.status === "lobby") {
-          showGuestScreen("guest-screen-waiting");
-        } else if (state.status === "playing") {
-          showGuestScreen("guest-screen-play");
-          loadGuestQuestion(
-            state.currentQuestionIndex,
-            state.questionActive,
-            state.timerEndTime,
-          );
-        } else if (state.status === "ended") {
-          showGuestScreen("guest-screen-result");
-          const myData = allPlayersList.find((p) => p.id === myUserId);
-          document.getElementById("guest-final-score").innerText = myData
-            ? myData.score || 0
-            : 0;
-          document.getElementById("result-guest-name").innerText = myNickname;
-        }
-      }
-
-      function showGuestScreen(screenId) {
-        const screens = [
-          "guest-screen-login",
-          "guest-screen-waiting",
-          "guest-screen-play",
-          "guest-screen-result",
-        ];
-        screens.forEach((s) => {
-          document.getElementById(s).classList.add("hidden");
-        });
-        document.getElementById(screenId).classList.remove("hidden");
-      }
-
-      // ==========================================
-      // ==========================================
-      function loadHostQuestion(index, active, timerEndTime) {
-        const q = WEDDING_CONFIG.questions[index];
-
-        document.getElementById("badge-category").innerText = q.category;
-        document.getElementById("text-current-num").innerText = index + 1;
-        document.getElementById("text-total-num").innerText =
-          WEDDING_CONFIG.questions.length;
-        document.getElementById("text-question").innerText = q.question;
-
-        // 動態渲染選項
-        const grid = document.getElementById("options-grid");
-        grid.innerHTML = "";
-
-        const colors = [
-          "from-pink-50 to-amber-50 border-amber-200 text-slate-700",
-          "from-amber-50/50 to-orange-50 border-orange-200 text-slate-700",
-          "from-sky-50 to-blue-50 border-sky-100 text-slate-700",
-          "from-emerald-50 to-teal-50 border-emerald-100 text-slate-700",
-        ];
-
-        q.options.forEach((opt, idx) => {
-          const div = document.createElement("div");
-          div.id = `host-option-${idx}`;
-          div.className = `w-full p-4 font-bold rounded-2xl border bg-gradient-to-br ${colors[idx % 4]} text-sm md:text-base flex items-center gap-3 transition-all`;
-          div.innerHTML = `
-          <span class="w-8 h-8 rounded-full bg-white flex items-center justify-center border font-serif-eng shadow-sm text-amber-800 shrink-0">
-            ${String.fromCharCode(65 + idx)}
-          </span>
-          <span class="flex-grow">${opt}</span>
-        `;
-          grid.appendChild(div);
-        });
-
-        // 設定新人角色為思考中
-        setHostCharacterEmotion("thinking");
-        document.getElementById("story-card").classList.add("hidden");
-        document.getElementById("btn-next").disabled = true;
-        document.getElementById("btn-next").classList.add("opacity-50");
-        document.getElementById("btn-reveal").classList.remove("hidden");
-
-        // 處理倒數計時與主動截止
-        clearInterval(localTimerInterval);
-
-        if (active && timerEndTime > Date.now()) {
-          const totalDuration = timerEndTime - Date.now();
-
-          localTimerInterval = setInterval(() => {
-            const remain = timerEndTime - Date.now();
-            const percent = Math.max(0, (remain / totalDuration) * 100);
-            document.getElementById("timer-progress").style.width =
-              `${percent}%`;
-
-            if (remain <= 3000 && remain > 0) {
-              playSound("tick");
-            }
-
-            if (remain <= 0) {
-              clearInterval(localTimerInterval);
-              hostRevealAnswer(); // 時間到揭曉
-            }
-          }, 100);
-        } else {
-          // 非 active 狀態 (已揭曉答案)
-          document.getElementById("timer-progress").style.width = `0%`;
-          document.getElementById("btn-reveal").classList.add("hidden");
-          document.getElementById("btn-next").disabled = false;
-          document.getElementById("btn-next").classList.remove("opacity-50");
-
-          // 高亮正確答案
-          const correctIdx = q.answerIndex;
-          q.options.forEach((_, idx) => {
-            const optDiv = document.getElementById(`host-option-${idx}`);
-            if (idx === correctIdx) {
-              optDiv.className =
-                "w-full p-4 font-black rounded-2xl border-2 text-emerald-900 bg-gradient-to-br from-emerald-100 to-teal-100 border-emerald-400 shadow-md ring-4 ring-emerald-200/50 flex items-center gap-3 animate-bounce";
-            } else {
-              optDiv.className =
-                "w-full p-4 font-bold rounded-2xl border bg-slate-100 border-slate-200 text-slate-400 opacity-40 flex items-center gap-3";
-            }
-          });
-
-          // 呈現故事卡
-          document.getElementById("text-story").innerText = q.story;
-          document.getElementById("story-card").classList.remove("hidden");
-          setHostCharacterEmotion("success");
-          triggerConfetti(35);
-        }
-      }
-
-      // ==========================================
-      // ==========================================
-      window.guestLogin = async function () {
-        const nameIn = document.getElementById("input-nickname").value.trim();
-        if (!nameIn) {
-          customAlert("請填寫一個可愛的暱稱唷！");
-          return;
-        }
-        playSound("click");
-        myNickname = nameIn;
-        document.getElementById("wait-guest-name").innerText = myNickname;
-
-        if (!auth.currentUser) return;
-
-        // 登入寫入 Firestore 玩家列表 (遵循 RULE 1)
-        await setDoc(
-          doc(db, "artifacts", appId, "public", "data", "players", myUserId),
-          {
-            nickname: myNickname,
-            score: 0,
-            answers: {},
-          },
-        );
-
-        // 刷新頁面狀態
-        if (currentGameState) {
-          renderGuestState(currentGameState);
-        }
-      };
-
-      function loadGuestQuestion(index, active, timerEndTime) {
-        const q = WEDDING_CONFIG.questions[index];
-
-        document.getElementById("guest-q-num").innerText =
-          `Q ${index + 1} / ${WEDDING_CONFIG.questions.length}`;
-        document.getElementById("guest-q-category").innerText = q.category;
-        document.getElementById("guest-q-title").innerText = q.question;
-
-        const myData = allPlayersList.find((p) => p.id === myUserId);
-        const currentScore = myData ? myData.score || 0 : 0;
-        document.getElementById("guest-score-badge").innerText = currentScore;
-
-        const container = document.getElementById("guest-options-container");
-        container.innerHTML = "";
-
-        document.getElementById("guest-submitted-box").classList.add("hidden");
-        document.getElementById("guest-feedback-box").classList.add("hidden");
-
-        // 判斷是否已經作答過
-        const myAnswered =
-          myData && myData.answers && myData.answers[index.toString()];
-
-        if (active && timerEndTime > Date.now()) {
-          // 答題進行中
-          if (myAnswered) {
-            // 已答過，進入等候
-            document
-              .getElementById("guest-submitted-box")
-              .classList.remove("hidden");
-          } else {
-            // 未答過，繪製可點擊選項
-            q.options.forEach((opt, idx) => {
-              const btn = document.createElement("button");
-              btn.className =
-                "w-full p-4 text-left font-bold rounded-xl border border-amber-200 bg-white hover:bg-amber-50/50 active:bg-amber-100/50 text-slate-700 transition-all text-xs flex items-center gap-3";
-              btn.innerHTML = `
-              <span class="w-6 h-6 rounded-full bg-slate-50 flex items-center justify-center border text-[10px] font-black text-[#b8962e] shrink-0">
-                ${String.fromCharCode(65 + idx)}
-              </span>
-              <span>${opt}</span>
-            `;
-              btn.onclick = () => submitGuestAnswer(index, idx, timerEndTime);
-              container.appendChild(btn);
-            });
-          }
-        } else {
-          // 已公布答案
-          if (myAnswered) {
-            const isCorrect = myAnswered.isCorrect;
-            const box = document.getElementById("guest-feedback-box");
-            const icon = document.getElementById("guest-feedback-icon");
-            const title = document.getElementById("guest-feedback-title");
-            const desc = document.getElementById("guest-feedback-desc");
-
-            box.classList.remove("hidden");
-            if (isCorrect) {
-              box.className =
-                "text-center py-5 rounded-xl border border-emerald-200 bg-emerald-50 text-emerald-800 animate-pulse";
-              icon.innerHTML = `<i data-lucide="check-circle-2" class="w-8 h-8 mx-auto text-emerald-600"></i>`;
-              title.innerText = "答對了！太博學了！🎉";
-              desc.innerText = `獲得分值，目前累計：${currentScore} 分`;
-            } else {
-              box.className =
-                "text-center py-5 rounded-xl border border-rose-200 bg-rose-50 text-rose-800";
-              icon.innerHTML = `<i data-lucide="alert-circle" class="w-8 h-8 mx-auto text-rose-500 animate-bounce"></i>`;
-              title.innerText = "可惜答錯了！😵";
-              desc.innerText = `正確答案是：${String.fromCharCode(65 + q.answerIndex)}。下一題要看準喔！`;
-            }
-            lucide.createIcons();
-          } else {
-            // 未作答
-            const box = document.getElementById("guest-feedback-box");
-            const icon = document.getElementById("guest-feedback-icon");
-            const title = document.getElementById("guest-feedback-title");
-            const desc = document.getElementById("guest-feedback-desc");
-
-            box.classList.remove("hidden");
-            box.className =
-              "text-center py-5 rounded-xl border border-slate-200 bg-slate-100 text-slate-500";
-            icon.innerHTML = `<i data-lucide="clock" class="w-8 h-8 mx-auto text-slate-400"></i>`;
-            title.innerText = "您錯過了作答時間 ⏳";
-            desc.innerText = `手腳要快，大螢幕出題就要立刻在手機點選喔！`;
-            lucide.createIcons();
-          }
-        }
-      }
-
-      // 賓客點擊送出答案
-      async function submitGuestAnswer(qIndex, selectedIdx, timerEndTime) {
-        playSound("click");
-        if (!auth.currentUser) return;
-
-        const q = WEDDING_CONFIG.questions[qIndex];
-        const isCorrect = selectedIdx === q.answerIndex;
-
-        // 計算分數：基本100分 + 時間剩餘獎勵 (最高150分)
-        const remainTimeMs = Math.max(0, timerEndTime - Date.now());
-        const timeBonus = Math.floor((remainTimeMs / 1000) * 10);
-        const pointsEarned = isCorrect ? 100 + timeBonus : 0;
-
-        const myData = allPlayersList.find((p) => p.id === myUserId);
-        const newScore = (myData ? myData.score || 0 : 0) + pointsEarned;
-
-        // 更新玩家作答狀況與累計分數
-        const answersUpdate =
-          myData && myData.answers ? { ...myData.answers } : {};
-        answersUpdate[qIndex.toString()] = {
-          selectedIdx: selectedIdx,
-          isCorrect: isCorrect,
-          points: pointsEarned,
-        };
-
-        await updateDoc(
-          doc(db, "artifacts", appId, "public", "data", "players", myUserId),
-          {
-            score: newScore,
-            answers: answersUpdate,
-          },
-        );
-
-        // 播放對錯音效反饋
-        if (isCorrect) {
-          playSound("success");
-        } else {
-          playSound("fail");
-        }
-
-        // 手動重新渲染狀態
-        if (currentGameState) {
-          loadGuestQuestion(
-            qIndex,
-            currentGameState.questionActive,
-            currentGameState.timerEndTime,
-          );
-        }
-      }
-
-      // ==========================================
-      // ==========================================
-      // 大廳已連線人數清單 UI
-      function updateLobbyPlayersUI() {
-        const container = document.getElementById("joined-players-list");
-        const countLabel = document.getElementById("joined-count");
-
-        if (!container) return;
-
-        countLabel.innerText = `${allPlayersList.length} 人`;
-        container.innerHTML = "";
-
-        if (allPlayersList.length === 0) {
-          container.innerHTML = `<p class="text-xs text-slate-400 py-2">等待賓客掃碼加入...</p>`;
-          return;
-        }
-
-        allPlayersList.forEach((p) => {
-          const span = document.createElement("span");
-          span.className =
-            "px-3 py-1 bg-white border border-[#d4af37]/40 text-slate-600 rounded-full text-xs font-semibold shadow-sm flex items-center gap-1 animate-fade-in";
-          span.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span> ${escapeHTML(p.nickname)}`;
-          container.appendChild(span);
-        });
-      }
-
-      // 當前已答題人數比例
-      function updateSubmitCountUI() {
-        const activeCount = document.getElementById("submitted-answers-count");
-        const totalCount = document.getElementById("total-active-players");
-
-        if (!activeCount || !currentGameState) return;
-
-        const qIndexStr = currentGameState.currentQuestionIndex.toString();
-        let count = 0;
-
-        allPlayersList.forEach((p) => {
-          if (p.answers && p.answers[qIndexStr]) {
-            count++;
-          }
-        });
-
-        activeCount.innerText = count;
-        totalCount.innerText = allPlayersList.length;
-      }
-
-      // 渲染排行榜前十名
-      function renderLeaderboard() {
-        const listContainer = document.getElementById("leaderboard-list");
-        if (!listContainer) return;
-
-        listContainer.innerHTML = "";
-
-        // 在記憶體中排序 (遵循 RULE 2 - 無複合查詢限制)
-        const sortedPlayers = [...allPlayersList].sort(
-          (a, b) => (b.score || 0) - (a.score || 0),
-        );
-
-        if (sortedPlayers.length === 0) {
-          listContainer.innerHTML = `<p class="text-sm text-slate-400 text-center py-4">今天沒有賓客參賽唷！</p>`;
-          return;
-        }
-
-        // 僅展示前 10 名
-        const topTen = sortedPlayers.slice(0, 10);
-
-        topTen.forEach((player, idx) => {
-          const row = document.createElement("div");
-
-          let medal = `<span class="text-slate-400 font-serif-eng font-bold w-6 text-center">${idx + 1}</span>`;
-          let highlightBg = "bg-white/40";
-          let scoreColor = "text-[#b8962e]";
-
-          if (idx === 0) {
-            medal = `<span class="text-amber-500 flex justify-center w-6"><i data-lucide="crown" class="w-5 h-5 fill-current"></i></span>`;
-            highlightBg = "bg-amber-50/70 border border-amber-200/50";
-            scoreColor = "text-amber-600 font-serif-eng text-lg";
-          } else if (idx === 1) {
-            medal = `<span class="text-slate-400 flex justify-center w-6"><i data-lucide="award" class="w-5 h-5"></i></span>`;
-            highlightBg = "bg-slate-50/70";
-          } else if (idx === 2) {
-            medal = `<span class="text-amber-700 flex justify-center w-6"><i data-lucide="award" class="w-5 h-5"></i></span>`;
-            highlightBg = "bg-amber-50/30";
-          }
-
-          row.className = `flex justify-between items-center p-3 rounded-xl ${highlightBg} transition-all`;
-          row.innerHTML = `
-          <div class="flex items-center gap-3">
-            ${medal}
-            <span class="font-bold text-slate-700 text-sm md:text-base">${escapeHTML(player.nickname)}</span>
-          </div>
-          <div class="flex items-center gap-1">
-            <span class="${scoreColor} font-black font-serif-eng">${player.score || 0}</span>
-            <span class="text-xs text-slate-400">分</span>
-          </div>
-        `;
-          listContainer.appendChild(row);
-        });
-
-        lucide.createIcons();
-      }
-
-      // ==========================================
-      // ==========================================
-      function getGroomSVG(state = "idle") {
-        let faceColor = "#FFE0D3";
-        let eyeExpression = `<ellipse cx="38" cy="48" rx="3.5" ry="4.5" fill="#334155"/>
-                           <ellipse cx="62" cy="48" rx="3.5" ry="4.5" fill="#334155"/>`;
-        let mouth = `<path d="M 44 58 Q 50 64 56 58" stroke="#334155" stroke-width="2.5" fill="none" stroke-linecap="round"/>`;
-        let extras = ``;
-        let bodyAnimation = "q-char-breathe";
-
-        if (state === "success") {
-          eyeExpression = `
-          <path d="M 32 48 L 40 42 L 34 52" stroke="#e11d48" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-          <path d="M 68 48 L 60 42 L 66 52" stroke="#e11d48" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-        `;
-          mouth = `<path d="M 42 56 Q 50 68 58 56 Z" fill="#e11d48"/>`;
-          extras = `
-          <text x="18" y="25" fill="#f43f5e" font-size="12" class="animate-bounce">❤</text>
-          <text x="78" y="20" fill="#f43f5e" font-size="14" class="animate-bounce">❤</text>
-        `;
-          bodyAnimation = "q-char-happy";
-        } else if (state === "fail") {
-          eyeExpression = `
-          <path d="M 34 44 L 42 52 M 42 44 L 34 52" stroke="#475569" stroke-width="2.5" stroke-linecap="round"/>
-          <path d="M 58 44 L 66 52 M 66 44 L 58 52" stroke="#475569" stroke-width="2.5" stroke-linecap="round"/>
-        `;
-          mouth = `<path d="M 44 60 Q 50 54 56 60" stroke="#475569" stroke-width="2.5" fill="none" stroke-linecap="round"/>`;
-          extras = `
-          <path d="M 72 38 C 72 38 75 42 72 45 C 69 45 69 41 72 38 Z" fill="#38bdf8"/>
-          <rect x="30" y="30" width="40" height="8" fill="#38bdf8" opacity="0.3" rx="2"/>
-        `;
-          bodyAnimation = "q-char-sad";
-        } else if (state === "thinking") {
-          eyeExpression = `
-          <ellipse cx="38" cy="46" rx="3.5" ry="3.5" fill="#334155"/>
-          <ellipse cx="62" cy="46" rx="3.5" ry="3.5" fill="#334155"/>
-        `;
-          mouth = `<path d="M 45 58 H 55" stroke="#334155" stroke-width="2.5" stroke-linecap="round"/>`;
-          extras = `<circle cx="20" cy="30" r="2" fill="#cbd5e1"/>`;
-          bodyAnimation = "q-char-breathe";
-        }
-
-        return `
-        <svg viewBox="0 0 100 120" class="${bodyAnimation} w-full h-full" xmlns="http://www.w3.org/2000/svg">
-          ${extras}
-          <path d="M 25 90 C 25 75 75 75 75 90 L 75 115 L 25 115 Z" fill="#2d3748"/>
-          <path d="M 42 80 L 50 94 L 58 80 Z" fill="#ffffff"/>
-          <path d="M 44 82 L 56 82 L 50 86 Z" fill="#d4af37"/>
-          <circle cx="50" cy="82" r="3" fill="#b8962e"/>
-          <circle cx="50" cy="50" r="28" fill="${faceColor}"/>
-          <circle cx="28" cy="56" r="5" fill="#f87171" opacity="0.4"/>
-          <circle cx="72" cy="56" r="5" fill="#f87171" opacity="0.4"/>
-          <path d="M 20 45 C 15 35 25 15 50 15 C 75 15 85 35 80 45 C 76 38 72 38 68 40 C 60 30 40 30 32 40 C 28 38 24 38 20 45 Z" fill="#1a202c"/>
-          <path d="M 35 25 Q 45 15 50 28" stroke="#1a202c" stroke-width="4" stroke-linecap="round"/>
-          ${eyeExpression}
-          ${mouth}
-          <circle cx="20" cy="50" r="5" fill="${faceColor}"/>
-          <circle cx="80" cy="50" r="5" fill="${faceColor}"/>
-        </svg>
-      `;
-      }
-
-      function getBrideSVG(state = "idle") {
-        let faceColor = "#FFE0D3";
-        let eyeExpression = `<ellipse cx="38" cy="48" rx="3.5" ry="4.5" fill="#334155"/>
-                           <ellipse cx="62" cy="48" rx="3.5" ry="4.5" fill="#334155"/>`;
-        let mouth = `<path d="M 44 58 Q 50 64 56 58" stroke="#334155" stroke-width="2.5" fill="none" stroke-linecap="round"/>`;
-        let extras = ``;
-        let bodyAnimation = "q-char-breathe";
-
-        if (state === "success") {
-          eyeExpression = `
-          <path d="M 32 48 L 40 42 L 34 52" stroke="#e11d48" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-          <path d="M 68 48 L 60 42 L 66 52" stroke="#e11d48" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-        `;
-          mouth = `<path d="M 42 56 Q 50 68 58 56 Z" fill="#e11d48"/>`;
-          extras = `
-          <text x="18" y="25" fill="#f43f5e" font-size="12" class="animate-bounce">❤</text>
-          <text x="78" y="20" fill="#f43f5e" font-size="14" class="animate-bounce">❤</text>
-        `;
-          bodyAnimation = "q-char-happy";
-        } else if (state === "fail") {
-          eyeExpression = `
-          <path d="M 34 44 L 42 52 M 42 44 L 34 52" stroke="#475569" stroke-width="2.5" stroke-linecap="round"/>
-          <path d="M 58 44 L 66 52 M 66 44 L 58 52" stroke="#475569" stroke-width="2.5" stroke-linecap="round"/>
-        `;
-          mouth = `<path d="M 44 60 Q 50 54 56 60" stroke="#475569" stroke-width="2.5" fill="none" stroke-linecap="round"/>`;
-          extras = `
-          <path d="M 72 38 C 72 38 75 42 72 45 C 69 45 69 41 72 38 Z" fill="#38bdf8"/>
-          <rect x="30" y="30" width="40" height="8" fill="#38bdf8" opacity="0.3" rx="2"/>
-        `;
-          bodyAnimation = "q-char-sad";
-        } else if (state === "thinking") {
-          eyeExpression = `
-          <ellipse cx="38" cy="46" rx="3.5" ry="3.5" fill="#334155"/>
-          <ellipse cx="62" cy="46" rx="3.5" ry="3.5" fill="#334155"/>
-        `;
-          mouth = `<path d="M 45 58 H 55" stroke="#334155" stroke-width="2.5" stroke-linecap="round"/>`;
-          bodyAnimation = "q-char-breathe";
-        }
-
-        return `
-        <svg viewBox="0 0 100 120" class="${bodyAnimation} w-full h-full" xmlns="http://www.w3.org/2000/svg">
-          <path d="M 15 45 C 10 90 20 120 50 120 C 80 120 90 90 85 45 Z" fill="#ffffff" opacity="0.3"/>
-          <path d="M 25 90 C 25 75 75 75 75 90 L 80 120 L 20 120 Z" fill="#ffffff" stroke="#fbcfe8" stroke-width="1.5"/>
-          <path d="M 35 85 C 35 85 50 100 65 85" stroke="#fbcfe8" stroke-width="2" fill="none"/>
-          <circle cx="50" cy="78" r="1.5" fill="#fbbf24"/>
-          <circle cx="46" cy="77" r="1.5" fill="#fbbf24"/>
-          <circle cx="54" cy="77" r="1.5" fill="#fbbf24"/>
-          <circle cx="50" cy="50" r="28" fill="${faceColor}"/>
-          <circle cx="28" cy="56" r="6" fill="#fb7185" opacity="0.4"/>
-          <circle cx="72" cy="56" r="6" fill="#fb7185" opacity="0.4"/>
-          <path d="M 20 45 C 15 35 25 15 50 15 C 75 15 85 35 80 45 C 78 35 75 30 70 32 C 60 22 40 22 30 32 C 25 30 22 35 20 45 Z" fill="#5c3a21"/>
-          <path d="M 22 45 Q 18 60 24 70" stroke="#5c3a21" stroke-width="3" fill="none" stroke-linecap="round"/>
-          <path d="M 78 45 Q 82 60 76 70" stroke="#5c3a21" stroke-width="3" fill="none" stroke-linecap="round"/>
-          <path d="M 40 20 L 45 14 L 50 18 L 55 14 L 60 20 Z" fill="#fbbf24"/>
-          <circle cx="50" cy="18" r="2.5" fill="#fb7185"/>
-          ${eyeExpression}
-          ${mouth}
-          <circle cx="20" cy="51" r="4.5" fill="${faceColor}"/>
-          <circle cx="80" cy="51" r="4.5" fill="${faceColor}"/>
-          <circle cx="20" cy="56" r="2" fill="#ffffff"/>
-          <circle cx="80" cy="56" r="2" fill="#ffffff"/>
-        </svg>
-      `;
-      }
-
-      function renderCharacters(state = "idle") {
-        const gWelcome = document.getElementById("welcome-groom-svg");
-        const bWelcome = document.getElementById("welcome-bride-svg");
-        const gResult = document.getElementById("result-groom-svg");
-        const bResult = document.getElementById("result-bride-svg");
-
-        if (gWelcome) gWelcome.innerHTML = getGroomSVG(state);
-        if (bWelcome) bWelcome.innerHTML = getBrideSVG(state);
-        if (gResult) gResult.innerHTML = getGroomSVG(state);
-        if (bResult) bResult.innerHTML = getBrideSVG(state);
-      }
-
-      function setHostCharacterEmotion(state) {
-        const gChar = document.getElementById("game-groom-char");
-        const bChar = document.getElementById("game-bride-char");
-        const gBubble = document.getElementById("groom-emotion-bubble");
-        const bBubble = document.getElementById("bride-emotion-bubble");
-
-        if (gChar) gChar.innerHTML = getGroomSVG(state);
-        if (bChar) bChar.innerHTML = getBrideSVG(state);
-
-        if (!gBubble) return;
-
-        if (state === "success") {
-          gBubble.innerText = "答對了太神！🎉";
-          bBubble.innerText = "真的好了解！❤️";
-          gBubble.classList.remove("hidden");
-          bBubble.classList.remove("hidden");
-        } else if (state === "fail") {
-          gBubble.innerText = "哎呀加油！😵";
-          bBubble.innerText = "沒猜到嗎？！👀";
-          gBubble.classList.remove("hidden");
-          bBubble.classList.remove("hidden");
-        } else {
-          gBubble.classList.add("hidden");
-          bBubble.classList.add("hidden");
-        }
-      }
-
-      // ==========================================
-      // ==========================================
-      function playSound(type) {
-        if (!isSoundEnabled) return;
-        try {
-          const AudioContext = window.AudioContext || window.webkitAudioContext;
-          const ctx = new AudioContext();
-
-          if (type === "success") {
-            const playNote = (freq, start, duration) => {
-              const osc = ctx.createOscillator();
-              const gain = ctx.createGain();
-              osc.connect(gain);
-              gain.connect(ctx.destination);
-              osc.type = "triangle";
-              osc.frequency.setValueAtTime(freq, ctx.currentTime + start);
-              gain.gain.setValueAtTime(0.12, ctx.currentTime + start);
-              gain.gain.exponentialRampToValueAtTime(
-                0.01,
-                ctx.currentTime + start + duration,
-              );
-              osc.start(ctx.currentTime + start);
-              osc.stop(ctx.currentTime + start + duration);
-            };
-            playNote(523.25, 0, 0.15); // C5
-            playNote(659.25, 0.08, 0.15); // E5
-            playNote(783.99, 0.16, 0.15); // G5
-            playNote(1046.5, 0.24, 0.35); // C6
-          } else if (type === "fail") {
-            const osc = ctx.createOscillator();
-            const gain = ctx.createGain();
-            osc.connect(gain);
-            gain.connect(ctx.destination);
-            osc.type = "sawtooth";
-            osc.frequency.setValueAtTime(280, ctx.currentTime);
-            osc.frequency.linearRampToValueAtTime(140, ctx.currentTime + 0.35);
-            gain.gain.setValueAtTime(0.08, ctx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(
-              0.01,
-              ctx.currentTime + 0.35,
-            );
-            osc.start();
-            osc.stop(ctx.currentTime + 0.35);
-          } else if (type === "click") {
-            const osc = ctx.createOscillator();
-            const gain = ctx.createGain();
-            osc.connect(gain);
-            gain.connect(ctx.destination);
-            osc.type = "sine";
-            osc.frequency.setValueAtTime(650, ctx.currentTime);
-            osc.frequency.exponentialRampToValueAtTime(
-              1100,
-              ctx.currentTime + 0.04,
-            );
-            gain.gain.setValueAtTime(0.08, ctx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(
-              0.01,
-              ctx.currentTime + 0.04,
-            );
-            osc.start();
-            osc.stop(ctx.currentTime + 0.04);
-          } else if (type === "tick") {
-            const osc = ctx.createOscillator();
-            const gain = ctx.createGain();
-            osc.connect(gain);
-            gain.connect(ctx.destination);
-            osc.type = "triangle";
-            osc.frequency.setValueAtTime(900, ctx.currentTime);
-            gain.gain.setValueAtTime(0.04, ctx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(
-              0.001,
-              ctx.currentTime + 0.03,
-            );
-            osc.start();
-            osc.stop(ctx.currentTime + 0.03);
-          }
-        } catch (e) {
-          console.warn("音效啟動受阻", e);
-        }
-      }
-
-      window.toggleSound = function () {
-        isSoundEnabled = !isSoundEnabled;
-        const btn = document.getElementById("sound-btn");
-        if (isSoundEnabled) {
-          btn.innerHTML = `<i data-lucide="volume-2" class="w-5 h-5"></i>`;
-          btn.className =
-            "p-3 bg-white/90 hover:bg-white rounded-full shadow-md text-[#b8962e] transition-all flex items-center justify-center border border-amber-100";
-        } else {
-          btn.innerHTML = `<i data-lucide="volume-x" class="w-5 h-5"></i>`;
-          btn.className =
-            "p-3 bg-white/90 hover:bg-white rounded-full shadow-md text-slate-400 transition-all flex items-center justify-center border border-slate-200";
-        }
-        lucide.createIcons();
-      };
-
-      // ==========================================
-      // ==========================================
-      function createPetals() {
-        const container = document.getElementById("petal-container");
-        if (!container) return;
-        container.innerHTML = "";
-        const petalTypes = [
-          `<path d="M10,0 C15,5 20,15 15,20 C10,25 0,20 0,15 C0,10 5,0 10,0 Z" fill="#e9d8a6" opacity="0.5"/>`,
-          `<path d="M12,5 C8,0 0,2 0,10 C0,17 12,24 12,24 C12,24 24,17 24,10 C24,2 16,0 12,5 Z" fill="#fda4af" opacity="0.4"/>`,
-        ];
-
-        for (let i = 0; i < 20; i++) {
-          const petal = document.createElement("svg");
-          petal.className = "petal";
-          petal.setAttribute("viewBox", "0 0 24 24");
-          petal.style.width = Math.random() * 12 + 10 + "px";
-          petal.style.height = petal.style.width;
-          petal.style.left = Math.random() * 100 + "vw";
-          petal.style.animationDuration = Math.random() * 8 + 7 + "s";
-          petal.style.animationDelay = Math.random() * 6 + "s";
-          petal.innerHTML =
-            petalTypes[Math.floor(Math.random() * petalTypes.length)];
-          container.appendChild(petal);
-        }
-      }
-
-      let confettiInterval = null;
-      const canvas = document.getElementById("confetti-canvas");
-      const ctx = canvas ? canvas.getContext("2d") : null;
-      let particles = [];
-
-      function resizeCanvas() {
-        if (!canvas) return;
-        canvas.width = canvas.parentElement.clientWidth;
-        canvas.height = canvas.parentElement.clientHeight;
-      }
-
-      class Particle {
-        constructor(x, y) {
-          this.x = x;
-          this.y = y;
-          this.size = Math.random() * 6 + 5;
-          this.color = `hsl(${Math.random() * 360}, 85%, 65%)`;
-          this.speedX = Math.random() * 6 - 3;
-          this.speedY = Math.random() * -8 - 4;
-          this.gravity = 0.25;
-          this.rotation = Math.random() * 360;
-          this.rotationSpeed = Math.random() * 8 - 4;
-        }
-        update() {
-          this.x += this.speedX;
-          this.speedY += this.gravity;
-          this.y += this.speedY;
-          this.rotation += this.rotationSpeed;
-        }
-        draw() {
-          if (!ctx) return;
-          ctx.save();
-          ctx.translate(this.x, this.y);
-          ctx.rotate((this.rotation * Math.PI) / 180);
-          ctx.fillStyle = this.color;
-          ctx.fillRect(-this.size / 2, -this.size / 2, this.size, this.size);
-          ctx.restore();
-        }
-      }
-
-      function triggerConfetti(count = 30) {
-        if (!canvas) return;
-        resizeCanvas();
-        const x = canvas.width / 2;
-        const y = canvas.height * 0.7;
-        for (let i = 0; i < count; i++) {
-          particles.push(new Particle(x, y));
-        }
-        animateConfetti();
-      }
-
-      function startContinuousConfetti() {
-        if (!canvas) return;
-        resizeCanvas();
-        confettiInterval = setInterval(() => {
-          const x = Math.random() * canvas.width;
-          particles.push(new Particle(x, -10));
-        }, 150);
-        animateConfetti();
-      }
-
-      function stopContinuousConfetti() {
-        clearInterval(confettiInterval);
-        particles = [];
-      }
-
-      function animateConfetti() {
-        if (!ctx || !canvas) return;
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        particles = particles.filter(
-          (p) => p.y < canvas.height && p.x > 0 && p.x < canvas.width,
-        );
-        particles.forEach((p) => {
-          p.update();
-          p.draw();
-        });
-        if (particles.length > 0) {
-          requestAnimationFrame(animateConfetti);
-        }
-      }
-
-      // ==========================================
-      // 實用輔助工具
-      // ==========================================
-      function escapeHTML(str) {
-        if (!str) return "";
-        return str.replace(
-          /[&<>'"]/g,
-          (tag) =>
-            ({
-              "&": "&amp;",
-              "<": "&lt;",
-              ">": "&gt;",
-              "'": "&#39;",
-              '"': "&quot;",
-            })[tag] || tag,
-        );
-      }
-
-      function customAlert(message) {
-        // 替代原生的 alert，確保優雅與不阻礙執行
-        const modal = document.createElement("div");
-        modal.className =
-          "fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-fade-in";
-        modal.innerHTML = `
-        <div class="bg-white rounded-2xl p-6 max-w-sm w-full border border-amber-100 shadow-xl text-center transform scale-100 transition-all">
-          <i data-lucide="heart" class="w-12 h-12 text-rose-400 fill-current mx-auto mb-4 animate-bounce"></i>
-          <p class="text-sm text-slate-700 font-bold leading-relaxed mb-6">${escapeHTML(message)}</p>
-          <button id="alert-ok-btn" class="w-full py-3 gold-gradient-bg text-white text-sm font-bold rounded-xl shadow-md tracking-wider">
-            好 的
-          </button>
+    <!-- ================= 客製化優雅 Dialog (Modal) 解決 alert/confirm 限制 ================= -->
+    <div id="custom-modal-alert" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+        <div class="bg-white rounded-2xl max-w-sm w-full p-6 border border-[#e2c7b2] shadow-2xl text-center space-y-4">
+            <h4 class="text-lg font-bold text-[#5c4a42]" id="custom-alert-title">幸福提示</h4>
+            <p class="text-sm text-[#8c7466] leading-relaxed" id="custom-alert-msg"></p>
+            <button id="btn-close-alert" class="px-6 py-2 gold-btn text-xs font-bold rounded-lg w-full">好的</button>
         </div>
-      `;
-        document.body.appendChild(modal);
-        lucide.createIcons();
-        document.getElementById("alert-ok-btn").onclick = () => {
-          playSound("click");
-          document.body.removeChild(modal);
+    </div>
+
+    <div id="custom-modal-confirm" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+        <div class="bg-white rounded-2xl max-w-sm w-full p-6 border border-[#e2c7b2] shadow-2xl text-center space-y-4">
+            <h4 class="text-lg font-bold text-[#5c4a42]">確定重設嗎？</h4>
+            <p class="text-sm text-[#8c7466] leading-relaxed" id="custom-confirm-msg"></p>
+            <div class="grid grid-cols-2 gap-3">
+                <button id="btn-confirm-cancel" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-bold rounded-lg">取消</button>
+                <button id="btn-confirm-ok" class="px-4 py-2 gold-btn text-xs font-bold rounded-lg">重設</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= Firebase Config 設定 Modal ================= -->
+    <div id="modal-config" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-fade-in">
+        <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl flex flex-col gap-4 border border-[#e2c7b2]">
+            <div class="flex justify-between items-center border-b border-[#f1e3d6] pb-3">
+                <h3 class="text-lg font-bold text-[#5c4a42] flex items-center gap-2">
+                    <i class="fa-solid fa-cloud-bolt gold-text"></i> Firebase Firestore 資料庫同步
+                </h3>
+                <button id="btn-close-config" class="text-[#8c7466] hover:text-[#5c4a42] text-lg"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            
+            <p class="text-xs text-[#8c7466] leading-relaxed">
+                貼入您的 Firebase 連線 <code>firebaseConfig</code> 以啟用多裝置即時對戰。不貼入亦可，本機多開視窗即可啟動模擬。
+            </p>
+
+            <textarea id="input-firebase-config" rows="8" placeholder='{
+  "apiKey": "AIzaSy...",
+  "authDomain": "...",
+  "projectId": "...",
+  "storageBucket": "...",
+  "messagingSenderId": "...",
+  "appId": "..."
+}' class="w-full p-3 font-mono text-xs border border-[#e2c7b2] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#aa7c11] bg-[#fbf4ee]/30"></textarea>
+
+            <div class="flex justify-between items-center gap-3">
+                <button id="btn-clear-config" class="px-4 py-2 bg-red-50 hover:bg-red-100 text-red-600 text-xs font-bold rounded-lg transition">
+                    清除設定
+                </button>
+                <div class="flex gap-2">
+                    <button id="btn-cancel-config" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-bold rounded-lg transition">
+                        取消
+                    </button>
+                    <button id="btn-save-config" class="px-5 py-2 gold-btn text-xs font-bold rounded-lg shadow-md transition">
+                        儲存並重新連線
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= Firebase SDK ================= -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getFirestore, doc, setDoc, getDoc, updateDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        // ================= 題目/設定管理在 Config 檔案中 =================
+        const WEDDING_CONFIG = {
+            groomName: "昶瑋",
+            brideName: "俞蕙",
+            countdownSeconds: 20, // 倒數計時20秒
+            questions: [
+                {
+                    title: "昶瑋跟俞蕙當初是在哪裡第一次見面的？",
+                    options: ["大學圖書館", "朋友生日聚會", "路跑活動", "巷口便利商店"],
+                    answer: 1, // B
+                    explanation: "沒錯！他們是在一場熱鬧的大學好朋友生日派對上認識的，當時一眼就注意到了彼此。"
+                },
+                {
+                    title: "新郎昶瑋最喜歡新娘俞蕙親手做的哪一道料理？",
+                    options: ["招牌紅酒燉牛肉", "香濃拿坡里義大利麵", "香脆黃金炸豬排", "暖心紅豆紫米粥"],
+                    answer: 0, // A
+                    explanation: "是紅酒燉牛肉！昶瑋每次都能連扒三碗飯，這道菜完美鎖住了新郎的胃。"
+                },
+                {
+                    title: "是誰先主動開口告白的？",
+                    options: ["昶瑋鼓起勇氣告白", "俞蕙大方暗示告白", "兩人在煙火下同時說出口", "好朋友在旁邊起鬨直接推一把"],
+                    answer: 0, // A
+                    explanation: "是昶瑋在一個繁星滿天的海灘，手捧著精心準備的鮮花勇敢告白的唷！"
+                },
+                {
+                    title: "新娘俞蕙最不能忍受新郎昶瑋哪一個小習慣？",
+                    options: ["洗完澡頭髮不吹乾", "襪子喜歡翻反的丟", "打電玩打到忘記時間", "睡覺時會講搞笑夢話"],
+                    answer: 1, // B
+                    explanation: "是脫襪子！俞蕙常常笑說洗衣服像在玩尋寶，都要幫他把襪子反翻回來。"
+                },
+                {
+                    title: "昶瑋與俞蕙蜜月旅行最想去哪一個地方？",
+                    options: ["浪漫的法國巴黎與南法", "神祕又神聖的埃及金字塔", "悠閒慵懶的馬爾地夫", "追尋極光的冰島與北歐"],
+                    answer: 3, // D
+                    explanation: "是冰島追極光！兩人都渴望親眼看見幸福的極光，這將是他們的下一站浪漫旅程。"
+                }
+            ]
         };
-      }
+
+        const quotes = [
+            "「最美的愛情，是我們執手相伴的每一天。」",
+            "「遇見你，是我這輩子最幸運的事。 —— 昶瑋」",
+            "「未來的路不論多遠，我都要牽著你的手一起走。 —— 俞蕙」",
+            "「因為有你，平凡的日子也開始閃閃發亮。」",
+            "「愛是陪伴，是傾聽，更是包容彼此的一切。」"
+        ];
+
+        // ================= SVG 寵妻Q版動態圖形代碼 =================
+        const coupleSVG = `
+        <svg viewBox="0 0 400 200" width="100%" height="100%">
+            <!-- 定義動畫關鍵幀 -->
+            <style>
+                @keyframes bowGroom {
+                    0%, 100% { transform: rotate(0deg) translateX(0px); }
+                    50% { transform: rotate(6deg) translateX(5px); }
+                }
+                @keyframes swayBride {
+                    0%, 100% { transform: rotate(0deg); }
+                    50% { transform: rotate(-3deg); }
+                }
+                @keyframes floatHeart {
+                    0% { transform: translateY(0) scale(0.6); opacity: 0; }
+                    50% { opacity: 0.9; }
+                    100% { transform: translateY(-40px) scale(1.1); opacity: 0; }
+                }
+                .groom-group {
+                    animation: bowGroom 3.5s ease-in-out infinite;
+                    transform-origin: 130px 180px;
+                }
+                .bride-group {
+                    animation: swayBride 4s ease-in-out infinite;
+                    transform-origin: 270px 180px;
+                }
+                .heart-pop {
+                    animation: floatHeart 2.5s ease-in-out infinite;
+                }
+            </style>
+            
+            <!-- 新郎 昶瑋 -->
+            <g class="groom-group">
+                <!-- 身體套裝 -->
+                <path d="M 100,140 L 160,140 L 150,195 L 110,195 Z" fill="#4d5359"/>
+                <path d="M 120,140 L 130,165 L 140,140" fill="#ffffff" stroke="#e2c7b2" stroke-width="1"/>
+                <polygon points="125,140 130,147 135,140" fill="#aa7c11"/> <!-- 領結 -->
+                <!-- 手部 holding flower umbrella/shield -->
+                <path d="M 155,150 Q 170,145 165,135 Q 160,130 150,145" fill="#ffd5be"/>
+                <!-- 花梗 (貼心伸出) -->
+                <line x1="165" y1="135" x2="195" y2="125" stroke="#4a824e" stroke-width="3"/>
+                <path d="M 195,125 C 190,115 210,115 200,125" fill="#f43f5e"/> <!-- 愛心花頭 -->
+                <!-- 頭部 & 靦腆臉部 -->
+                <circle cx="130" cy="100" r="32" fill="#ffd5be"/>
+                <path d="M 100,95 Q 115,75 140,75 Q 160,75 162,95" fill="#2d3033"/> <!-- 髮型 -->
+                <circle cx="120" cy="102" r="3.5" fill="#5c4a42"/> <!-- 眼睛 -->
+                <circle cx="142" cy="102" r="3.5" fill="#5c4a42"/> <!-- 眼睛 -->
+                <path d="M 125,115 Q 131,122 137,115" stroke="#aa7c11" stroke-width="2.5" fill="none"/> <!-- 害羞微笑 -->
+                <ellipse cx="115" cy="110" rx="6" ry="3.5" fill="#fca5a5" opacity="0.6"/> <!-- 害羞腮紅 -->
+                <ellipse cx="147" cy="110" rx="6" ry="3.5" fill="#fca5a5" opacity="0.6"/> <!-- 害羞腮紅 -->
+            </g>
+
+            <!-- 新娘 俞蕙 -->
+            <g class="bride-group">
+                <!-- 浪漫婚紗 -->
+                <path d="M 230,195 Q 260,130 250,140 L 290,140 Q 280,130 310,195 Z" fill="#ffffff" stroke="#f1e3d6" stroke-width="1"/>
+                <path d="M 230,195 L 310,195" stroke="#f1e3d6" stroke-width="2"/>
+                <!-- 領口珍珠項鍊 -->
+                <path d="M 260,140 Q 270,146 280,140" stroke="#fbf4ee" stroke-width="3" fill="none"/>
+                <!-- 雙手捧著捧花 -->
+                <path d="M 245,152 Q 255,145 260,152" fill="#ffd5be"/>
+                <circle cx="255" cy="150" r="8" fill="#f472b6"/> <!-- 粉色玫瑰花球 -->
+                <circle cx="262" cy="153" r="6" fill="#fca5a5"/>
+                <!-- 頭部 & 幸福臉蛋 -->
+                <circle cx="270" cy="100" r="30" fill="#ffd5be"/>
+                <path d="M 242,95 Q 265,72 298,95" fill="#4d3227"/> <!-- 秀髮 -->
+                <path d="M 270,70 Q 240,110 242,160" fill="none" stroke="#fbf4ee" stroke-width="3" stroke-dasharray="2" opacity="0.8"/> <!-- 夢幻新娘頭紗 -->
+                <path d="M 270,70 Q 300,110 298,160" fill="none" stroke="#fbf4ee" stroke-width="3" stroke-dasharray="2" opacity="0.8"/>
+                <path d="M 255,102 Q 260,98 264,102" stroke="#5c4a42" stroke-width="3" fill="none"/> <!-- 開心彎彎眼 -->
+                <path d="M 276,102 Q 281,98 285,102" stroke="#5c4a42" stroke-width="3" fill="none"/> <!-- 開心彎彎眼 -->
+                <path d="M 264,115 Q 270,123 276,115" stroke="#ef4444" stroke-width="3" fill="none"/> <!-- 紅唇甜笑 -->
+                <ellipse cx="255" cy="110" rx="5" ry="3" fill="#f87171" opacity="0.6"/> <!-- 腮紅 -->
+                <ellipse cx="285" cy="110" rx="5" ry="3" fill="#f87171" opacity="0.6"/> <!-- 腮紅 -->
+            </g>
+
+            <!-- 寵妻互動冒出的愛心 -->
+            <path d="M 190,100 Q 185,90 195,85 Q 205,90 200,100" fill="#f43f5e" class="heart-pop" style="animation-delay: 0s;"/>
+            <path d="M 205,80 Q 200,72 210,68 Q 220,72 215,80" fill="#f43f5e" class="heart-pop" style="animation-delay: 0.8s;"/>
+            <path d="M 175,75 Q 170,68 180,64 Q 190,68 185,75" fill="#f43f5e" class="heart-pop" style="animation-delay: 1.5s;"/>
+        </svg>
+        `;
+
+        // ================= 變數與狀態管理 =================
+        let db = null;
+        let isFirebaseConnected = false;
+        const defaultAppId = "changwei_yuhui_wedding_game_ppt";
+        
+        // 核心狀態機
+        let gameState = {
+            currentStep: 'lobby',      // 'lobby', 'quiz', 'ranking'
+            currentQuestionIdx: 0,
+            showAnswer: false,
+            timerEndTime: 0,           // 同步結束時間戳記
+            players: [],              // { name, score, currentAnswer, answerTime }
+            lastUpdated: Date.now()
+        };
+
+        let myGuestName = "";
+        let myScore = 0;
+        let myCurrentAnswer = -1;
+        let timerInterval = null;
+
+        // ================= 自訂 PPT 風格對話盒 =================
+        function showCustomAlert(msg, title = "幸福提示") {
+            document.getElementById('custom-alert-title').textContent = title;
+            document.getElementById('custom-alert-msg').textContent = msg;
+            document.getElementById('custom-modal-alert').classList.remove('hidden');
+        }
+        document.getElementById('btn-close-alert').onclick = () => {
+            document.getElementById('custom-modal-alert').classList.add('hidden');
+        };
+
+        function showCustomConfirm(msg, onConfirm) {
+            document.getElementById('custom-confirm-msg').textContent = msg;
+            document.getElementById('custom-modal-confirm').classList.remove('hidden');
+            
+            document.getElementById('btn-confirm-cancel').onclick = () => {
+                document.getElementById('custom-modal-confirm').classList.add('hidden');
+            };
+            document.getElementById('btn-confirm-ok').onclick = () => {
+                document.getElementById('custom-modal-confirm').classList.add('hidden');
+                onConfirm();
+            };
+        }
+
+        // ================= 讀取/儲存 Firebase 設定 =================
+        let savedConfig = null;
+        try {
+            const configStr = localStorage.getItem('wedding_firebase_config_ppt');
+            if (configStr) {
+                savedConfig = JSON.parse(configStr);
+            }
+        } catch (e) {
+            console.error("讀取儲存設定失敗", e);
+        }
+
+        // ================= 初始化連線資料庫 =================
+        async function initFirebase() {
+            if (savedConfig) {
+                try {
+                    const app = initializeApp(savedConfig);
+                    db = getFirestore(app);
+                    isFirebaseConnected = true;
+                    updateDbBadge(true, "即時雲端連線中");
+                    listenToGameStatus();
+                } catch (e) {
+                    console.error("Firebase 連線失敗", e);
+                    updateDbBadge(false, "連線失敗，改用單機測試");
+                    setupMockEnvironment();
+                }
+            } else {
+                updateDbBadge(false, "單機測試模式 (請點左下角設定雲端)");
+                setupMockEnvironment();
+            }
+        }
+
+        function updateDbBadge(connected, text) {
+            const dot = document.getElementById('db-status-dot');
+            const txt = document.getElementById('db-status-text');
+            const badge = document.getElementById('db-status-badge');
+            
+            if (connected) {
+                dot.className = "w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping";
+                txt.textContent = text;
+                badge.className = "flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-100";
+            } else {
+                dot.className = "w-2.5 h-2.5 rounded-full bg-amber-500";
+                txt.textContent = text;
+                badge.className = "flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold bg-amber-50 text-amber-700 border border-amber-100";
+            }
+        }
+
+        // ================= 雲端監聽與同步機制 =================
+        let unsubscribeGame = null;
+
+        function listenToGameStatus() {
+            if (!isFirebaseConnected || !db) return;
+
+            const gameRef = doc(db, 'artifacts', defaultAppId, 'public', 'data', 'game_state');
+            unsubscribeGame = onSnapshot(gameRef, (docSnap) => {
+                if (docSnap.exists()) {
+                    syncStateWithCloud(docSnap.data());
+                } else {
+                    resetCloudState();
+                }
+            }, (error) => {
+                console.error("連線同步失敗:", error);
+            });
+        }
+
+        function syncStateWithCloud(cloudState) {
+            gameState = cloudState;
+            if (currentRole === 'master') {
+                updateMasterUI();
+            }
+            if (currentRole === 'guest') {
+                updateGuestUI();
+            }
+            syncTimerBar();
+        }
+
+        async function resetCloudState() {
+            const initialState = {
+                currentStep: 'lobby',
+                currentQuestionIdx: 0,
+                showAnswer: false,
+                timerEndTime: 0,
+                players: [],
+                lastUpdated: Date.now()
+            };
+            if (!isFirebaseConnected || !db) {
+                gameState = initialState;
+                updateMasterUI();
+                updateGuestUI();
+                return;
+            }
+            try {
+                const gameRef = doc(db, 'artifacts', defaultAppId, 'public', 'data', 'game_state');
+                await setDoc(gameRef, initialState);
+            } catch (e) {
+                console.error("重置雲端失敗:", e);
+            }
+        }
+
+        async function updateCloudState(updates) {
+            if (!isFirebaseConnected || !db) {
+                gameState = { ...gameState, ...updates, lastUpdated: Date.now() };
+                updateMasterUI();
+                updateGuestUI();
+                syncTimerBar();
+                return;
+            }
+            try {
+                const gameRef = doc(db, 'artifacts', defaultAppId, 'public', 'data', 'game_state');
+                await updateDoc(gameRef, {
+                    ...updates,
+                    lastUpdated: Date.now()
+                });
+            } catch (e) {
+                console.error("更新雲端失敗:", e);
+            }
+        }
+
+        function setupMockEnvironment() {
+            if (currentRole === 'master' && gameState.players.length === 0) {
+                gameState.players = [
+                    { name: "新郎昶瑋", score: 0, currentAnswer: -1, answerTime: null },
+                    { name: "新娘俞蕙", score: 0, currentAnswer: -1, answerTime: null },
+                    { name: "伴娘小真", score: 0, currentAnswer: -1, answerTime: null }
+                ];
+                updateMasterUI();
+            }
+        }
+
+        // ================= 角色判定與路由 =================
+        let currentRole = 'master';
+
+        function determineRole() {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('role') === 'guest' || urlParams.get('guest') !== null) {
+                currentRole = 'guest';
+                document.getElementById('screen-master').classList.add('hidden');
+                document.getElementById('screen-guest').classList.remove('hidden');
+                initGuestFlow();
+            } else {
+                currentRole = 'master';
+                document.getElementById('screen-master').classList.remove('hidden');
+                document.getElementById('screen-guest').classList.add('hidden');
+                initMasterFlow();
+            }
+            renderCoupleSVGs();
+        }
+
+        // 將Q版向量圖渲染至各插槽中
+        function renderCoupleSVGs() {
+            const list = ['couple-svg-lobby', 'couple-svg-quiz', 'couple-svg-ranking', 'couple-svg-login', 'couple-svg-wait', 'couple-svg-feedback', 'couple-svg-result', 'couple-svg-over'];
+            list.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.innerHTML = coupleSVG;
+            });
+        }
+
+        // ================= 大螢幕端核心功能 =================
+        function initMasterFlow() {
+            const joinUrl = `${window.location.origin}${window.location.pathname}?role=guest`;
+            document.getElementById('room-url-display').textContent = joinUrl;
+            
+            document.getElementById('qrcode-canvas').innerHTML = "";
+            new QRCode(document.getElementById("qrcode-canvas"), {
+                text: joinUrl,
+                width: 250,
+                height: 250,
+                colorDark: "#4a3e3d",
+                colorLight: "#ffffff",
+                correctLevel: QRCode.CorrectLevel.H
+            });
+
+            document.getElementById('btn-start-game').onclick = () => {
+                if (gameState.players.length === 0) {
+                    showCustomAlert("目前還沒有貴賓加入遊戲大廳唷！等候親友掃描登入再點擊開始吧。");
+                    return;
+                }
+                const endTime = Date.now() + (WEDDING_CONFIG.countdownSeconds * 1000);
+                updateCloudState({
+                    currentStep: 'quiz',
+                    currentQuestionIdx: 0,
+                    showAnswer: false,
+                    timerEndTime: endTime
+                });
+            };
+
+            document.getElementById('btn-show-answer').onclick = () => {
+                revealAnswer();
+            };
+
+            document.getElementById('btn-next-question').onclick = () => {
+                const nextIdx = gameState.currentQuestionIdx + 1;
+                if (nextIdx < WEDDING_CONFIG.questions.length) {
+                    const endTime = Date.now() + (WEDDING_CONFIG.countdownSeconds * 1000);
+                    const clearedPlayers = gameState.players.map(p => ({
+                        ...p,
+                        currentAnswer: -1,
+                        answerTime: null
+                    }));
+                    
+                    updateCloudState({
+                        currentStep: 'quiz',
+                        currentQuestionIdx: nextIdx,
+                        showAnswer: false,
+                        timerEndTime: endTime,
+                        players: clearedPlayers
+                    });
+                }
+            };
+
+            document.getElementById('btn-show-ranking').onclick = () => {
+                updateCloudState({ currentStep: 'ranking' });
+            };
+
+            document.getElementById('btn-restart-game').onclick = () => {
+                showCustomConfirm("您確定要清除當前所有分數，並重新回到大廳嗎？", () => {
+                    resetCloudState();
+                });
+            };
+        }
+
+        // 公布答案並計算分數
+        function revealAnswer() {
+            if (gameState.showAnswer) return;
+
+            const currentQ = WEDDING_CONFIG.questions[gameState.currentQuestionIdx];
+            const updatedPlayers = gameState.players.map(p => {
+                if (p.currentAnswer === currentQ.answer) {
+                    let timeBonus = 0;
+                    if (p.answerTime) {
+                        const elapsed = Math.max(0, (p.answerTime - (gameState.timerEndTime - WEDDING_CONFIG.countdownSeconds * 1000)) / 1000);
+                        timeBonus = Math.max(0, Math.round(50 - (elapsed * 2.5))); 
+                    }
+                    return { ...p, score: (p.score || 0) + 100 + timeBonus };
+                }
+                return p;
+            });
+
+            updateCloudState({
+                showAnswer: true,
+                players: updatedPlayers
+            });
+        }
+
+        // ================= 倒數與倒數條同步處理 =================
+        function syncTimerBar() {
+            if (timerInterval) clearInterval(timerInterval);
+            if (gameState.currentStep !== 'quiz' || gameState.showAnswer) return;
+
+            timerInterval = setInterval(() => {
+                const now = Date.now();
+                const total = WEDDING_CONFIG.countdownSeconds * 1000;
+                const remaining = Math.max(0, gameState.timerEndTime - now);
+                const percent = (remaining / total) * 100;
+                
+                const bar = document.getElementById('quiz-progress-bar');
+                const txt = document.getElementById('quiz-countdown');
+                const guestTimer = document.getElementById('guest-quiz-timer');
+
+                if (bar) bar.style.width = `${percent}%`;
+                
+                const secondsLeft = Math.ceil(remaining / 1000);
+                if (txt) txt.textContent = `倒數 ${secondsLeft} 秒`;
+                if (guestTimer) guestTimer.textContent = `倒數 ${secondsLeft} 秒`;
+
+                if (remaining === 0) {
+                    clearInterval(timerInterval);
+                    if (currentRole === 'master') {
+                        revealAnswer();
+                    }
+                }
+            }, 100);
+        }
+
+        // 大螢幕介面更新
+        function updateMasterUI() {
+            const lobbySec = document.getElementById('master-lobby');
+            const quizSec = document.getElementById('master-quiz');
+            const rankSec = document.getElementById('master-ranking');
+
+            if (gameState.currentStep === 'lobby') {
+                lobbySec.classList.remove('hidden');
+                quizSec.classList.add('hidden');
+                rankSec.classList.add('hidden');
+                renderLobbyPlayers();
+            } else if (gameState.currentStep === 'quiz') {
+                lobbySec.classList.add('hidden');
+                quizSec.classList.remove('hidden');
+                rankSec.classList.add('hidden');
+                renderQuizPage();
+            } else if (gameState.currentStep === 'ranking') {
+                lobbySec.classList.add('hidden');
+                quizSec.classList.add('hidden');
+                rankSec.classList.remove('hidden');
+                renderLeaderboard();
+            }
+        }
+
+        function renderLobbyPlayers() {
+            const container = document.getElementById('lobby-players-container');
+            const countSpan = document.getElementById('lobby-count');
+            const noPlayers = document.getElementById('no-players-hint');
+
+            const players = gameState.players || [];
+            countSpan.textContent = players.length;
+
+            if (players.length === 0) {
+                noPlayers.classList.remove('hidden');
+                container.innerHTML = "";
+            } else {
+                noPlayers.classList.add('hidden');
+                container.innerHTML = "";
+                players.forEach(p => {
+                    const bubble = document.createElement('div');
+                    bubble.className = "px-4 py-2 bg-white/90 border border-[#e2c7b2] text-[#5c4a42] font-semibold rounded-full shadow-sm flex items-center gap-2 animate-bounce";
+                    bubble.innerHTML = `💌 ${p.name}`;
+                    container.appendChild(bubble);
+                });
+            }
+        }
+
+        function renderQuizPage() {
+            const currentQ = WEDDING_CONFIG.questions[gameState.currentQuestionIdx];
+            
+            document.getElementById('quiz-question-index').textContent = `Q${gameState.currentQuestionIdx + 1}`;
+            document.getElementById('quiz-question-title').textContent = currentQ.title;
+
+            // 選項
+            for (let i = 0; i < 4; i++) {
+                document.getElementById(`option-text-${i}`).textContent = currentQ.options[i];
+                const box = document.getElementById(`option-box-${i}`);
+                box.className = "p-5 bg-white border border-[#e2c7b2] rounded-2xl flex items-center gap-4 transition-all duration-300";
+            }
+
+            // 作答人數
+            const players = gameState.players || [];
+            const submittedCount = players.filter(p => p.currentAnswer !== undefined && p.currentAnswer !== -1).length;
+            document.getElementById('quiz-submit-count').textContent = submittedCount;
+            document.getElementById('quiz-total-players').textContent = players.length;
+
+            const btnShowAnswer = document.getElementById('btn-show-answer');
+            const btnNext = document.getElementById('btn-next-question');
+            const btnRank = document.getElementById('btn-show-ranking');
+            const explanationBox = document.getElementById('explanation-box');
+
+            if (gameState.showAnswer) {
+                for (let i = 0; i < 4; i++) {
+                    const box = document.getElementById(`option-box-${i}`);
+                    if (i === currentQ.answer) {
+                        box.className = "p-5 bg-emerald-50 border-2 border-emerald-500 rounded-2xl flex items-center gap-4 transition-all duration-300 scale-102 shadow-md";
+                    } else {
+                        box.className = "p-5 bg-gray-50 border border-gray-100 opacity-40 rounded-2xl flex items-center gap-4 transition-all duration-300";
+                    }
+                }
+                btnShowAnswer.classList.add('hidden');
+
+                // 爆料與解釋故事
+                explanationBox.classList.remove('hidden');
+                document.getElementById('explanation-text').textContent = currentQ.explanation;
+
+                if (gameState.currentQuestionIdx === WEDDING_CONFIG.questions.length - 1) {
+                    btnNext.classList.add('hidden');
+                    btnRank.classList.remove('hidden');
+                } else {
+                    btnNext.classList.remove('hidden');
+                    btnRank.classList.add('hidden');
+                }
+            } else {
+                btnShowAnswer.classList.remove('hidden');
+                btnNext.classList.add('hidden');
+                btnRank.classList.add('hidden');
+                explanationBox.classList.add('hidden');
+            }
+        }
+
+        function renderLeaderboard() {
+            const players = [...(gameState.players || [])];
+            players.sort((a, b) => b.score - a.score);
+
+            const listContainer = document.getElementById('ranking-list');
+            listContainer.innerHTML = "";
+
+            const limit = Math.min(10, players.length);
+            if (limit === 0) {
+                listContainer.innerHTML = `<p class="text-center text-xs text-[#8c7466] py-6">目前尚未有貴賓得分紀錄</p>`;
+                return;
+            }
+
+            for (let i = 0; i < limit; i++) {
+                const rankItem = document.createElement('div');
+                let trophy = `🥇`;
+                if (i === 1) trophy = `🥈`;
+                else if (i === 2) trophy = `🥉`;
+                else trophy = `<span class="w-6 h-6 rounded-full bg-[#fbf4ee] border border-[#e2c7b2] text-xs font-bold flex items-center justify-center text-[#aa7c11]">${i + 1}</span>`;
+
+                rankItem.className = "flex justify-between items-center bg-white/80 p-3.5 rounded-xl border border-[#e2c7b2]/60 shadow-sm animate-fade-in";
+                rankItem.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <span class="text-xl">${trophy}</span>
+                        <span class="font-bold text-[#5c4a42]">${players[i].name}</span>
+                    </div>
+                    <span class="text-xs bg-[#fbf4ee] text-[#aa7c11] border border-[#e2c7b2]/40 px-3 py-1 rounded-full font-bold">${players[i].score} pt</span>
+                `;
+                listContainer.appendChild(rankItem);
+            }
+        }
+
+        // ================= 賓客手機端核心功能 =================
+        function initGuestFlow() {
+            const randQuote = quotes[Math.floor(Math.random() * quotes.length)];
+            document.getElementById('wedding-quote').textContent = randQuote;
+
+            document.getElementById('btn-join-wedding').onclick = async () => {
+                const nameInput = document.getElementById('input-guest-name').value.trim();
+                if (!nameInput) {
+                    showCustomAlert("請先填入您的幸福暱稱，才能讓新人看見你唷！");
+                    return;
+                }
+
+                myGuestName = nameInput;
+                document.getElementById('guest-my-name').textContent = myGuestName;
+                
+                const updatedPlayers = [...(gameState.players || [])];
+                if (updatedPlayers.some(p => p.name === myGuestName)) {
+                    myGuestName += " " + Math.floor(Math.random() * 99);
+                    document.getElementById('guest-my-name').textContent = myGuestName;
+                }
+
+                const newPlayer = {
+                    name: myGuestName,
+                    score: 0,
+                    currentAnswer: -1,
+                    answerTime: null
+                };
+                updatedPlayers.push(newPlayer);
+
+                await updateCloudState({ players: updatedPlayers });
+
+                document.getElementById('guest-login').classList.add('hidden');
+                document.getElementById('guest-waiting').classList.remove('hidden');
+            };
+        }
+
+        window.submitAnswer = function(optionIndex) {
+            if (myCurrentAnswer !== -1) return;
+            
+            myCurrentAnswer = optionIndex;
+            const updatedPlayers = gameState.players.map(p => {
+                if (p.name === myGuestName) {
+                    return { ...p, currentAnswer: optionIndex, answerTime: Date.now() };
+                }
+                return p;
+            });
+
+            updateCloudState({ players: updatedPlayers });
+
+            const optNames = ["A", "B", "C", "D"];
+            document.getElementById('guest-quiz').classList.add('hidden');
+            document.getElementById('guest-feedback').classList.remove('hidden');
+            document.getElementById('feedback-desc').textContent = `您已選擇：選項【${optNames[optionIndex]}】。答對加 100 分，答題速度愈快還有額外加成喔！`;
+        };
+
+        // 賓客手機畫面切換
+        function updateGuestUI() {
+            const loginSec = document.getElementById('guest-login');
+            const waitSec = document.getElementById('guest-waiting');
+            const quizSec = document.getElementById('guest-quiz');
+            const feedbackSec = document.getElementById('guest-feedback');
+            const resultSec = document.getElementById('guest-result');
+            const overSec = document.getElementById('guest-game-over');
+
+            if (!myGuestName) {
+                loginSec.classList.remove('hidden');
+                waitSec.classList.add('hidden');
+                quizSec.classList.add('hidden');
+                feedbackSec.classList.add('hidden');
+                resultSec.classList.add('hidden');
+                overSec.classList.add('hidden');
+                return;
+            }
+
+            const myInfo = gameState.players.find(p => p.name === myGuestName);
+            if (myInfo) {
+                myScore = myInfo.score || 0;
+                document.getElementById('guest-my-score').textContent = `${myScore} pt`;
+            }
+
+            if (gameState.currentStep === 'lobby') {
+                loginSec.classList.add('hidden');
+                waitSec.classList.remove('hidden');
+                quizSec.classList.add('hidden');
+                feedbackSec.classList.add('hidden');
+                resultSec.classList.add('hidden');
+                overSec.classList.add('hidden');
+                
+                myCurrentAnswer = -1;
+            } 
+            else if (gameState.currentStep === 'quiz') {
+                loginSec.classList.add('hidden');
+                waitSec.classList.add('hidden');
+                overSec.classList.add('hidden');
+
+                const currentQ = WEDDING_CONFIG.questions[gameState.currentQuestionIdx];
+
+                if (!gameState.showAnswer) {
+                    resultSec.classList.add('hidden');
+                    if (myCurrentAnswer === -1) {
+                        quizSec.classList.remove('hidden');
+                        feedbackSec.classList.add('hidden');
+
+                        document.getElementById('guest-question-index').textContent = `Q${gameState.currentQuestionIdx + 1}`;
+                        document.getElementById('guest-question-title').textContent = currentQ.title;
+                        
+                        for (let i = 0; i < 4; i++) {
+                            document.getElementById(`guest-option-text-${i}`).textContent = currentQ.options[i];
+                        }
+                    } else {
+                        quizSec.classList.add('hidden');
+                        feedbackSec.classList.remove('hidden');
+                    }
+                } else {
+                    quizSec.classList.add('hidden');
+                    feedbackSec.classList.add('hidden');
+                    resultSec.classList.remove('hidden');
+
+                    const isCorrect = (myCurrentAnswer === currentQ.answer);
+                    const optNames = ["A", "B", "C", "D"];
+                    const resultIcon = document.getElementById('result-status-icon');
+                    const resultTitle = document.getElementById('result-status-title');
+                    const resultScoreText = document.getElementById('result-status-score');
+                    
+                    if (isCorrect) {
+                        resultIcon.textContent = "🎉";
+                        resultIcon.className = "w-16 h-16 rounded-full flex items-center justify-center text-3xl shadow-md bg-emerald-50 text-emerald-600 border border-emerald-100 animate-bounce";
+                        resultTitle.textContent = "超讚！答對了";
+                    } else {
+                        resultIcon.textContent = "💡";
+                        resultIcon.className = "w-16 h-16 rounded-full flex items-center justify-center text-3xl shadow-md bg-red-50 text-red-500 border border-red-100";
+                        resultTitle.textContent = "哎呀！答錯了";
+                    }
+
+                    resultScoreText.textContent = `當前總累計： ${myScore} pt`;
+                    document.getElementById('result-correct-answer').textContent = `正確答案是： 【${optNames[currentQ.answer]}】 ${currentQ.options[currentQ.answer]}`;
+                    document.getElementById('guest-result-explanation').textContent = currentQ.explanation;
+
+                    if (myCurrentAnswer !== -1 && !gameState.showAnswer) {
+                        myCurrentAnswer = -1;
+                    }
+                }
+            } 
+            else if (gameState.currentStep === 'ranking') {
+                loginSec.classList.add('hidden');
+                waitSec.classList.add('hidden');
+                quizSec.classList.add('hidden');
+                feedbackSec.classList.add('hidden');
+                resultSec.classList.add('hidden');
+                overSec.classList.remove('hidden');
+
+                document.getElementById('guest-final-score').textContent = `${myScore} pt`;
+            }
+        }
+
+        // ================= 櫻花飄落特效 =================
+        function createSakura() {
+            const container = document.getElementById('sakura-container');
+            if (!container) return;
+            const size = Math.random() * 15 + 8;
+            const petal = document.createElement('div');
+            petal.classList.add('cherry-blossom');
+            petal.style.width = `${size}px`;
+            petal.style.height = `${size}px`;
+            petal.style.left = `${Math.random() * 100}vw`;
+            petal.style.animationDuration = `${Math.random() * 5 + 5}s`;
+            container.appendChild(petal);
+
+            setTimeout(() => { petal.remove(); }, 10000);
+        }
+
+        // ================= Config 設定彈窗與儲存 =================
+        const modalConfig = document.getElementById('modal-config');
+        const btnOpenConfig = document.getElementById('btn-open-config');
+        const btnCloseConfig = document.getElementById('btn-close-config');
+        const btnCancelConfig = document.getElementById('btn-cancel-config');
+        const btnSaveConfig = document.getElementById('btn-save-config');
+        const btnClearConfig = document.getElementById('btn-clear-config');
+        const configTextarea = document.getElementById('input-firebase-config');
+
+        btnOpenConfig.onclick = () => {
+            configTextarea.value = localStorage.getItem('wedding_firebase_config_ppt') || "";
+            modalConfig.classList.remove('hidden');
+        };
+
+        btnCloseConfig.onclick = btnCancelConfig.onclick = () => {
+            modalConfig.classList.add('hidden');
+        };
+
+        btnSaveConfig.onclick = () => {
+            const val = configTextarea.value.trim();
+            if (!val) {
+                showCustomAlert("請輸入有效的 JSON 設定！");
+                return;
+            }
+            try {
+                JSON.parse(val);
+                localStorage.setItem('wedding_firebase_config_ppt', val);
+                showCustomAlert("設定已成功儲存！網頁將重新連線。");
+                setTimeout(() => { window.location.reload(); }, 1200);
+            } catch (e) {
+                showCustomAlert("JSON 格式不正確，請確認格式！");
+            }
+        };
+
+        btnClearConfig.onclick = () => {
+            localStorage.removeItem('wedding_firebase_config_ppt');
+            showCustomAlert("已清除自訂設定，回到本機模擬測試模式。");
+            setTimeout(() => { window.location.reload(); }, 1200);
+        };
+
+        // ================= 啟動初始化 =================
+        window.onload = function() {
+            setInterval(createSakura, 350);
+            determineRole();
+            initFirebase();
+        };
+
     </script>
-  </body>
+</body>
 </html>
