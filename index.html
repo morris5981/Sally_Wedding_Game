@@ -696,7 +696,7 @@
       </div>
     </footer>
 
-    <!-- ================= 客製化優雅 Dialog (Modal) 解決 alert/confirm 限制 ================= -->
+    <!-- ================= 客製化優雅 Dialog (Modal) ================= -->
     <div
       id="custom-modal-alert"
       class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50"
@@ -749,109 +749,20 @@
       </div>
     </div>
 
-    <!-- ================= Firebase SDK ================= -->
+    <!-- ================= Firebase SDK與去中心化架構邏輯 ================= -->
     <script type="module">
       import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
       import {
         getAuth,
         signInAnonymously,
-        onAuthStateChanged,
       } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
       import {
         getFirestore,
         doc,
         setDoc,
-        getDoc,
         updateDoc,
         onSnapshot,
       } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-
-      // ================= 固定的 Firebase 設定檔與題目管理 (Config) =================
-      const WEDDING_CONFIG = {
-        // ─── 雲端連線設定 ───
-        // 請在此處貼上您真實的 Firebase 設定金鑰，完成後存檔並部署至 Github 即可。
-        firebaseConfig: {
-          apiKey: "AIzaSyD4PkvmJS-0eJ3ymY3B0VhSTyv9ezoZZUE",
-          authDomain: "sally-wedding-game.firebaseapp.com",
-          projectId: "sally-wedding-game",
-          storageBucket: "sally-wedding-game.firebasestorage.app",
-          messagingSenderId: "234049650604",
-          appId: "1:234049650604:web:9f406f2e4ebc57a5094409",
-          measurementId: "G-25JPEGDLKY",
-        },
-
-        // ─── 新人資料與控制 ───
-        groomName: "昶瑋",
-        brideName: "俞蕙",
-        countdownSeconds: 20, // 答題時間 (秒)
-
-        // ─── 題目庫 ───
-        questions: [
-          {
-            title: "昶瑋跟俞蕙當初是在哪裡第一次見面的？",
-            options: ["大學圖書館", "朋友生日聚會", "路跑活動", "巷口便利商店"],
-            answer: 1, // B (以 0 為起始，0 代表 A，1 代表 B...)
-            explanation:
-              "沒錯！他們是在一場熱鬧的大學好朋友生日派對上認識的，當時一眼就注意到了彼此。",
-          },
-          {
-            title: "新郎昶瑋最喜歡新娘俞蕙親手做的哪一道料理？",
-            options: [
-              "招牌紅酒燉牛肉",
-              "香濃拿坡里義大利麵",
-              "香脆黃金炸豬排",
-              "暖心紅豆紫米粥",
-            ],
-            answer: 0, // A
-            explanation:
-              "是紅酒燉牛肉！昶瑋每次都能連扒三碗飯，這道菜完美鎖住了新郎的胃。",
-          },
-          {
-            title: "是誰先主動開口告白的？",
-            options: [
-              "昶瑋鼓起勇氣告白",
-              "俞蕙大方暗示告白",
-              "兩人在煙火下同時說出口",
-              "好朋友在旁邊起鬨直接推一把",
-            ],
-            answer: 0, // A
-            explanation:
-              "是昶瑋在一個繁星滿天的海灘，手捧著精心準備的鮮花勇敢告白的唷！",
-          },
-          {
-            title: "新娘俞蕙最不能忍受新郎昶瑋哪一個小習慣？",
-            options: [
-              "洗完澡頭髮不吹乾",
-              "襪子喜歡翻反的丟",
-              "打電玩打到忘記時間",
-              "睡覺時會講搞笑夢話",
-            ],
-            answer: 1, // B
-            explanation:
-              "是脫襪子！俞蕙常常笑說洗衣服像在玩尋寶，都要幫他把襪子反翻回來。",
-          },
-          {
-            title: "昶瑋與俞蕙蜜月旅行最想去哪一個地方？",
-            options: [
-              "浪漫的法國巴黎與南法",
-              "神祕又神聖的埃及金字塔",
-              "悠閒慵懶的馬爾地夫",
-              "追尋極光的冰島與北歐",
-            ],
-            answer: 3, // D
-            explanation:
-              "是冰島追極光！兩人都渴望親眼看見幸福的極光，這將是他們的下一站浪漫旅程。",
-          },
-        ],
-      };
-
-      const quotes = [
-        "「最美的愛情，是我們執手相伴的每一天。」",
-        "「遇見你，是我這輩子最幸運的事。 —— 昶瑋」",
-        "「未來的路不論多遠，我都要牽著你的手一起走。 —— 俞蕙」",
-        "「因為有你，平凡的日子也開始閃閃發亮。」",
-        "「愛是陪伴，是傾聽，更是包容彼此的一切。」",
-      ];
 
       // ================= SVG 寵妻Q版動態圖形代碼 =================
       const coupleSVG = `
@@ -924,33 +835,117 @@
             <path d="M 205,80 Q 200,72 210,68 Q 220,72 215,80" fill="#f43f5e" class="heart-pop" style="animation-delay: 0.8s;"/>
             <path d="M 175,75 Q 170,68 180,64 Q 190,68 185,75" fill="#f43f5e" class="heart-pop" style="animation-delay: 1.5s;"/>
         </svg>
-        `;
+      `;
 
-      // ================= 變數與狀態管理 =================
+      // ================= 固定的 Firebase 設定檔與設定資訊 =================
+      const WEDDING_CONFIG = {
+        firebaseConfig: {
+          apiKey: "AIzaSyD4PkvmJS-0eJ3ymY3B0VhSTyv9ezoZZUE",
+          authDomain: "sally-wedding-game.firebaseapp.com",
+          projectId: "sally-wedding-game",
+          storageBucket: "sally-wedding-game.firebasestorage.app",
+          messagingSenderId: "234049650604",
+          appId: "1:234049650604:web:9f406f2e4ebc57a5094409",
+          measurementId: "G-25JPEGDLKY",
+        },
+        groomName: "昶瑋",
+        brideName: "俞蕙",
+        countdownSeconds: 20,
+      };
+
+      // 預設強健的本地題庫 (即便 JSON 讀取因 CORS 失敗，也能完美無縫運行 5 題！)
+      let localQuestions = [
+        {
+          title: "昶瑋跟俞蕙當初是在哪裡第一次見面的？",
+          options: ["大學圖書館", "朋友生日聚會", "路跑活動", "巷口便利商店"],
+          answer: 1,
+          explanation:
+            "沒錯！他們是在一場熱鬧的大學好朋友生日派對上認識的，當時一眼就注意到了彼此。",
+        },
+        {
+          title: "新郎昶瑋最喜歡新娘俞蕙親手做的哪一道料理？",
+          options: [
+            "招牌紅酒燉牛肉",
+            "香濃拿坡里義大利麵",
+            "香脆黃金炸豬排",
+            "暖心紅豆紫米粥",
+          ],
+          answer: 0,
+          explanation:
+            "是紅酒燉牛肉！昶瑋每次都能連扒三碗飯，這道菜完美鎖住了新郎的胃。",
+        },
+        {
+          title: "是誰先主動開口告白的？",
+          options: [
+            "昶瑋鼓起勇氣告白",
+            "俞蕙大方暗示告白",
+            "兩人在煙火下同時說出口",
+            "好朋友在旁邊起鬨直接推一把",
+          ],
+          answer: 0,
+          explanation:
+            "是昶瑋在一個繁星滿天的海灘，手捧著精心準備的鮮花勇敢告白的唷！",
+        },
+        {
+          title: "新娘俞蕙最不能忍受新郎昶瑋哪一個小習慣？",
+          options: [
+            "洗完澡頭髮不吹乾",
+            "襪子喜歡翻反的丟",
+            "打電玩打到忘記時間",
+            "睡覺時會講搞笑夢話",
+          ],
+          answer: 1,
+          explanation:
+            "是脫襪子！俞蕙常常笑說洗衣服像在玩尋寶，都要幫他把襪子反翻回來。",
+        },
+        {
+          title: "昶瑋與俞蕙蜜月旅行最想去哪一個地方？",
+          options: [
+            "浪漫的法國巴黎與南法",
+            "神祕又神聖的埃及金字塔",
+            "悠閒慵懶的馬爾地夫",
+            "追尋極光的冰島與北歐",
+          ],
+          answer: 3,
+          explanation:
+            "是冰島追極光！兩人都渴望親眼看見幸福的極光，這將是他們的下一站浪漫旅程。",
+        },
+      ];
+
+      const quotes = [
+        "「最美的愛情，是我們執手相伴的每一天。」",
+        "「遇見你，是我這輩子最幸運的事。 —— 昶瑋」",
+        "「未來的路不論多遠，我都要牽著你的手一起走。 —— 俞蕙」",
+        "「因為有你，平凡的日子也開始閃閃發亮。」",
+        "「愛是陪伴，是傾聽，更是包容彼此的一切。」",
+      ];
+
       let db = null;
       let auth = null;
       let currentUser = null;
       let isFirebaseConnected = false;
 
-      // 使用統一規則指定的路徑格式以利後台進行安全性隔離
       const appId =
         typeof __app_id !== "undefined"
           ? __app_id
           : "changwei_yuhui_wedding_game_ppt";
 
+      // 遊戲全域狀態 (完全將 players 從單純陣列改為鍵值對 Map以防止高併發衝突)
       let gameState = {
         currentStep: "lobby",
         currentQuestionIdx: 0,
         showAnswer: false,
         timerEndTime: 0,
-        players: [],
+        players: {}, // 使用 Map 儲存： { "uid123": { name: "阿明", score: 0 ... } }
         lastUpdated: Date.now(),
       };
 
       let myGuestName = "";
       let myScore = 0;
       let myCurrentAnswer = -1;
+      let lastScoredQuestionIdx = -1; // 避免重複加分的保險機制
       let timerInterval = null;
+      let currentRole = "master";
 
       // ================= 自訂對話盒 (取代 Native Window 彈窗) =================
       function showCustomAlert(msg, title = "幸福提示") {
@@ -983,11 +978,26 @@
         };
       }
 
-      // ================= 初始化連線資料庫 (Rule 3: 確保先匿名登入，再讀寫資料庫) =================
+      // ================= 題目動態載入器 =================
+      async function loadQuestions() {
+        try {
+          const response = await fetch("questions.json");
+          if (response.ok) {
+            localQuestions = await response.json();
+            console.log("成功自 questions.json 載入最新題庫！", localQuestions);
+          } else {
+            console.warn("無法存取 questions.json，已完美啟用本地內置題庫。");
+          }
+        } catch (error) {
+          console.warn(
+            "本機直接開啟遭遇 CORS 限制，已無縫切換至本地強健備用題庫。",
+          );
+        }
+      }
+
+      // ================= 初始化連線資料庫 (安全匿名登入) =================
       async function initFirebase() {
         const config = WEDDING_CONFIG.firebaseConfig;
-
-        // 偵測是否已填入真實設定金鑰 (非預設 placeholder)
         const isConfigured =
           config && config.apiKey && !config.apiKey.includes("YOUR_");
 
@@ -997,7 +1007,7 @@
             auth = getAuth(app);
             db = getFirestore(app);
 
-            // 執行匿名登入 (新增防護：如果未在 Firebase 控制台啟用匿名登入，此處會拋出錯誤)
+            // 確保先進行安全匿名登入，滿足規則要求
             const userCredential = await signInAnonymously(auth);
             currentUser = userCredential.user;
             isFirebaseConnected = true;
@@ -1006,24 +1016,11 @@
             listenToGameStatus();
           } catch (e) {
             console.error("Firebase 安全初始化失敗:", e);
-
-            // 特殊處理：當未啟用匿名登入 (auth/configuration-not-found) 時給予精緻提示
-            if (e.code === "auth/configuration-not-found") {
-              updateDbBadge(false, "匿名登入未開啟，使用單機測試");
-              showCustomAlert(
-                "檢測到您的 Firebase Authentication 尚未啟用「匿名登入 (Anonymous)」功能。\n\n請前往 Firebase 控制台 -> Authentication -> Sign-in method 啟用「匿名」登入管道，即可暢玩多人在線連線功能！目前網頁已自動切換回本機模擬測試模式。",
-                "🔑 Firebase 驗證提示",
-              );
-            } else {
-              updateDbBadge(false, "安全驗證失敗，改用單機測試");
-            }
+            updateDbBadge(false, "權限不足或連線失敗，啟用單機模式");
             setupMockEnvironment();
           }
         } else {
-          updateDbBadge(
-            false,
-            "單機測試模式 (請在 HTML 代碼內設定 Firebase Config)",
-          );
+          updateDbBadge(false, "單機測試模式");
           setupMockEnvironment();
         }
       }
@@ -1047,14 +1044,13 @@
         }
       }
 
-      // ================= 雲端監聽與同步機制 (Rule 1: Strict Paths, Rule 3: Auth Guard) =================
+      // ================= 雲端即時監聽 =================
       let unsubscribeGame = null;
 
-      // 【修改關鍵】：路徑節點數必須為雙數。原 artifacts/{appId}/public/data/game_state (5個)
-      // 修正為符合 6 個雙數段落的路徑： artifacts/{appId}/public/data/game_state/current (6個)
       function listenToGameStatus() {
         if (!isFirebaseConnected || !db || !currentUser) return;
 
+        // 符合安全規則路徑： artifacts/{appId}/public/data/game_state/current (雙數節點)
         const gameRef = doc(
           db,
           "artifacts",
@@ -1075,10 +1071,8 @@
             }
           },
           (error) => {
-            console.error(
-              "安全連線同步失敗，請確認 Firebase Rules 設定:",
-              error,
-            );
+            console.error("資料庫同步失敗，請檢查規則配置:", error);
+            updateDbBadge(false, "權限錯誤，改用本地單機");
           },
         );
       }
@@ -1100,15 +1094,17 @@
           currentQuestionIdx: 0,
           showAnswer: false,
           timerEndTime: 0,
-          players: [],
+          players: {}, // 使用 Map 去除陣列覆蓋衝突
           lastUpdated: Date.now(),
         };
+
         if (!isFirebaseConnected || !db || !currentUser) {
           gameState = initialState;
           updateMasterUI();
           updateGuestUI();
           return;
         }
+
         try {
           const gameRef = doc(
             db,
@@ -1121,7 +1117,7 @@
           );
           await setDoc(gameRef, initialState);
         } catch (e) {
-          console.error("重置雲端失敗:", e);
+          console.error("初始化資料庫狀態失敗:", e);
         }
       }
 
@@ -1148,42 +1144,43 @@
             lastUpdated: Date.now(),
           });
         } catch (e) {
-          console.error("更新雲端失敗:", e);
+          console.error("資料更新失敗:", e);
         }
       }
 
       function setupMockEnvironment() {
-        if (currentRole === "master" && gameState.players.length === 0) {
-          gameState.players = [
-            {
+        if (
+          currentRole === "master" &&
+          Object.keys(gameState.players).length === 0
+        ) {
+          gameState.players = {
+            mock_groom: {
               name: "新郎昶瑋",
               score: 0,
               currentAnswer: -1,
               answerTime: null,
               uid: "mock_groom",
             },
-            {
+            mock_bride: {
               name: "新娘俞蕙",
               score: 0,
               currentAnswer: -1,
               answerTime: null,
               uid: "mock_bride",
             },
-            {
+            mock_maid: {
               name: "伴娘小真",
               score: 0,
               currentAnswer: -1,
               answerTime: null,
               uid: "mock_maid",
             },
-          ];
+          };
           updateMasterUI();
         }
       }
 
       // ================= 角色判定與路由 =================
-      let currentRole = "master";
-
       function determineRole() {
         const urlParams = new URLSearchParams(window.location.search);
         if (
@@ -1203,7 +1200,6 @@
         renderCoupleSVGs();
       }
 
-      // 渲染 Q 版向量圖插槽
       function renderCoupleSVGs() {
         const list = [
           "couple-svg-lobby",
@@ -1221,7 +1217,7 @@
         });
       }
 
-      // ================= 大螢幕端主機控功能 =================
+      // ================= 大螢幕端主控邏輯 =================
       function initMasterFlow() {
         const joinUrl = `${window.location.origin}${window.location.pathname}?role=guest`;
         document.getElementById("room-url-display").textContent = joinUrl;
@@ -1237,7 +1233,8 @@
         });
 
         document.getElementById("btn-start-game").onclick = () => {
-          if (gameState.players.length === 0) {
+          const playersList = Object.values(gameState.players || {});
+          if (playersList.length === 0) {
             showCustomAlert(
               "目前還沒有貴賓加入遊戲大廳唷！等候親友掃描登入再點擊開始吧。",
             );
@@ -1253,25 +1250,30 @@
         };
 
         document.getElementById("btn-show-answer").onclick = () => {
-          revealAnswer();
+          updateCloudState({ showAnswer: true });
         };
 
-        document.getElementById("btn-next-question").onclick = () => {
+        document.getElementById("btn-next-question").onclick = async () => {
           const nextIdx = gameState.currentQuestionIdx + 1;
-          if (nextIdx < WEDDING_CONFIG.questions.length) {
+          if (nextIdx < localQuestions.length) {
             const endTime = Date.now() + WEDDING_CONFIG.countdownSeconds * 1000;
-            const clearedPlayers = gameState.players.map((p) => ({
-              ...p,
-              currentAnswer: -1,
-              answerTime: null,
-            }));
 
-            updateCloudState({
+            // 切換新題目時，將所有人答題紀錄一併原子性重置，讓各手機自動亮起按鈕！
+            const resetPlayers = {};
+            Object.keys(gameState.players || {}).forEach((uid) => {
+              resetPlayers[uid] = {
+                ...gameState.players[uid],
+                currentAnswer: -1,
+                answerTime: null,
+              };
+            });
+
+            await updateCloudState({
               currentStep: "quiz",
               currentQuestionIdx: nextIdx,
               showAnswer: false,
               timerEndTime: endTime,
-              players: clearedPlayers,
+              players: resetPlayers,
             });
           }
         };
@@ -1290,36 +1292,7 @@
         };
       }
 
-      // 公布答案並計算分數
-      function revealAnswer() {
-        if (gameState.showAnswer) return;
-
-        const currentQ = WEDDING_CONFIG.questions[gameState.currentQuestionIdx];
-        const updatedPlayers = gameState.players.map((p) => {
-          if (p.currentAnswer === currentQ.answer) {
-            let timeBonus = 0;
-            if (p.answerTime) {
-              const elapsed = Math.max(
-                0,
-                (p.answerTime -
-                  (gameState.timerEndTime -
-                    WEDDING_CONFIG.countdownSeconds * 1000)) /
-                  1000,
-              );
-              timeBonus = Math.max(0, Math.round(50 - elapsed * 2.5));
-            }
-            return { ...p, score: (p.score || 0) + 100 + timeBonus };
-          }
-          return p;
-        });
-
-        updateCloudState({
-          showAnswer: true,
-          players: updatedPlayers,
-        });
-      }
-
-      // ================= 倒數與倒數條同步處理 =================
+      // ================= 倒數與計時器處理 =================
       function syncTimerBar() {
         if (timerInterval) clearInterval(timerInterval);
         if (gameState.currentStep !== "quiz" || gameState.showAnswer) return;
@@ -1343,13 +1316,13 @@
           if (remaining === 0) {
             clearInterval(timerInterval);
             if (currentRole === "master") {
-              revealAnswer();
+              updateCloudState({ showAnswer: true });
             }
           }
         }, 100);
       }
 
-      // 大螢幕介面更新
+      // ================= UI 更新渲染引擎 =================
       function updateMasterUI() {
         const lobbySec = document.getElementById("master-lobby");
         const quizSec = document.getElementById("master-quiz");
@@ -1373,24 +1346,23 @@
         }
       }
 
-      // 防止 DOM 被 innerHTML 清空後發生錯誤的玩家名單渲染
       function renderLobbyPlayers() {
         const container = document.getElementById("lobby-players-container");
         const countSpan = document.getElementById("lobby-count");
         if (!container || !countSpan) return;
 
-        const players = gameState.players || [];
-        countSpan.textContent = players.length;
+        const playersList = Object.values(gameState.players || {});
+        countSpan.textContent = playersList.length;
 
-        if (players.length === 0) {
+        if (playersList.length === 0) {
           container.innerHTML = `
-                    <div class="w-full text-center text-gray-400 py-4 text-xs" id="no-players-hint">
-                        <i class="fa-solid fa-spinner animate-spin mr-1"></i> 等待賓客加入中...
-                    </div>
-                `;
+            <div class="w-full text-center text-gray-400 py-4 text-xs" id="no-players-hint">
+                <i class="fa-solid fa-spinner animate-spin mr-1"></i> 等待賓客加入中...
+            </div>
+          `;
         } else {
           container.innerHTML = "";
-          players.forEach((p) => {
+          playersList.forEach((p) => {
             const bubble = document.createElement("div");
             bubble.className =
               "px-4 py-2 bg-white/90 border border-[#e2c7b2] text-[#5c4a42] font-semibold rounded-full shadow-sm flex items-center gap-2 animate-bounce";
@@ -1401,14 +1373,14 @@
       }
 
       function renderQuizPage() {
-        const currentQ = WEDDING_CONFIG.questions[gameState.currentQuestionIdx];
+        if (localQuestions.length === 0) return;
+        const currentQ = localQuestions[gameState.currentQuestionIdx];
 
         document.getElementById("quiz-question-index").textContent =
           `Q${gameState.currentQuestionIdx + 1}`;
         document.getElementById("quiz-question-title").textContent =
           currentQ.title;
 
-        // 選項
         for (let i = 0; i < 4; i++) {
           document.getElementById(`option-text-${i}`).textContent =
             currentQ.options[i];
@@ -1417,15 +1389,14 @@
             "p-5 bg-white border border-[#e2c7b2] rounded-2xl flex items-center gap-4 transition-all duration-300";
         }
 
-        // 作答人數
-        const players = gameState.players || [];
-        const submittedCount = players.filter(
+        const playersList = Object.values(gameState.players || {});
+        const submittedCount = playersList.filter(
           (p) => p.currentAnswer !== undefined && p.currentAnswer !== -1,
         ).length;
         document.getElementById("quiz-submit-count").textContent =
           submittedCount;
         document.getElementById("quiz-total-players").textContent =
-          players.length;
+          playersList.length;
 
         const btnShowAnswer = document.getElementById("btn-show-answer");
         const btnNext = document.getElementById("btn-next-question");
@@ -1444,16 +1415,11 @@
             }
           }
           btnShowAnswer.classList.add("hidden");
-
-          // 爆料與解釋故事
           explanationBox.classList.remove("hidden");
           document.getElementById("explanation-text").textContent =
             currentQ.explanation;
 
-          if (
-            gameState.currentQuestionIdx ===
-            WEDDING_CONFIG.questions.length - 1
-          ) {
+          if (gameState.currentQuestionIdx === localQuestions.length - 1) {
             btnNext.classList.add("hidden");
             btnRank.classList.remove("hidden");
           } else {
@@ -1469,13 +1435,12 @@
       }
 
       function renderLeaderboard() {
-        const players = [...(gameState.players || [])];
-        players.sort((a, b) => b.score - a.score);
-
+        const playersList = Object.values(gameState.players || {});
+        const sorted = [...playersList].sort((a, b) => b.score - a.score);
         const listContainer = document.getElementById("ranking-list");
         listContainer.innerHTML = "";
 
-        const limit = Math.min(10, players.length);
+        const limit = Math.min(10, sorted.length);
         if (limit === 0) {
           listContainer.innerHTML = `<p class="text-center text-xs text-[#8c7466] py-6">目前尚未有貴賓得分紀錄</p>`;
           return;
@@ -1492,17 +1457,17 @@
           rankItem.className =
             "flex justify-between items-center bg-white/80 p-3.5 rounded-xl border border-[#e2c7b2]/60 shadow-sm animate-fade-in";
           rankItem.innerHTML = `
-                    <div class="flex items-center gap-3">
-                        <span class="text-xl">${trophy}</span>
-                        <span class="font-bold text-[#5c4a42]">${players[i].name}</span>
-                    </div>
-                    <span class="text-xs bg-[#fbf4ee] text-[#aa7c11] border border-[#e2c7b2]/40 px-3 py-1 rounded-full font-bold">${players[i].score} pt</span>
-                `;
+            <div class="flex items-center gap-3">
+                <span class="text-xl">${trophy}</span>
+                <span class="font-bold text-[#5c4a42]">${sorted[i].name}</span>
+            </div>
+            <span class="text-xs bg-[#fbf4ee] text-[#aa7c11] border border-[#e2c7b2]/40 px-3 py-1 rounded-full font-bold">${sorted[i].score} pt</span>
+          `;
           listContainer.appendChild(rankItem);
         }
       }
 
-      // ================= 賓客手機端核心功能 =================
+      // ================= 賓客端手機控制流 =================
       function initGuestFlow() {
         const randQuote = quotes[Math.floor(Math.random() * quotes.length)];
         document.getElementById("wedding-quote").textContent = randQuote;
@@ -1519,55 +1484,87 @@
           myGuestName = nameInput;
           document.getElementById("guest-my-name").textContent = myGuestName;
 
-          const updatedPlayers = [...(gameState.players || [])];
-          if (updatedPlayers.some((p) => p.name === myGuestName)) {
+          const playersList = Object.values(gameState.players || {});
+          if (playersList.some((p) => p.name === myGuestName)) {
             myGuestName += " " + Math.floor(Math.random() * 99);
             document.getElementById("guest-my-name").textContent = myGuestName;
           }
 
-          // 安全儲存賓客的 uid（Firebase 匿名帳號 UID）以利安全過濾
           const myUid = currentUser ? currentUser.uid : "local_" + Date.now();
 
-          const newPlayer = {
-            name: myGuestName,
-            score: 0,
-            currentAnswer: -1,
-            answerTime: null,
-            uid: myUid,
-          };
-          updatedPlayers.push(newPlayer);
-
-          await updateCloudState({ players: updatedPlayers });
+          // 去中心化：直接往專屬我的 Uid 鍵值欄位寫入，完全避免互相蓋台
+          if (isFirebaseConnected && db) {
+            const gameRef = doc(
+              db,
+              "artifacts",
+              appId,
+              "public",
+              "data",
+              "game_state",
+              "current",
+            );
+            const updatePayload = {};
+            updatePayload[`players.${myUid}`] = {
+              name: myGuestName,
+              score: 0,
+              currentAnswer: -1,
+              answerTime: null,
+              uid: myUid,
+            };
+            await updateDoc(gameRef, updatePayload);
+          } else {
+            gameState.players[myUid] = {
+              name: myGuestName,
+              score: 0,
+              currentAnswer: -1,
+              answerTime: null,
+              uid: myUid,
+            };
+            updateGuestUI();
+          }
 
           document.getElementById("guest-login").classList.add("hidden");
           document.getElementById("guest-waiting").classList.remove("hidden");
         };
       }
 
-      window.submitAnswer = function (optionIndex) {
+      window.submitAnswer = async function (optionIndex) {
         if (myCurrentAnswer !== -1) return;
 
         myCurrentAnswer = optionIndex;
-        const updatedPlayers = gameState.players.map((p) => {
-          // 安全防護驗證：只有 uid 相同的對象才能更新自己的答案
-          const myUid = currentUser ? currentUser.uid : null;
-          if (p.name === myGuestName && (!myUid || p.uid === myUid)) {
-            return { ...p, currentAnswer: optionIndex, answerTime: Date.now() };
-          }
-          return p;
-        });
+        const myUid = currentUser ? currentUser.uid : "local_test";
 
-        updateCloudState({ players: updatedPlayers });
+        if (isFirebaseConnected && db) {
+          const gameRef = doc(
+            db,
+            "artifacts",
+            appId,
+            "public",
+            "data",
+            "game_state",
+            "current",
+          );
+          const updatePayload = {};
+          updatePayload[`players.${myUid}.currentAnswer`] = optionIndex;
+          updatePayload[`players.${myUid}.answerTime`] = Date.now();
+          await updateDoc(gameRef, updatePayload);
+        } else {
+          if (gameState.players[myUid]) {
+            gameState.players[myUid].currentAnswer = optionIndex;
+            gameState.players[myUid].answerTime = Date.now();
+          }
+          updateGuestUI();
+        }
 
         const optNames = ["A", "B", "C", "D"];
         document.getElementById("guest-quiz").classList.add("hidden");
         document.getElementById("guest-feedback").classList.remove("hidden");
         document.getElementById("feedback-desc").textContent =
-          `您已選擇：選項【${optNames[optionIndex]}】。答對加 100 分，答題速度愈快還有額外加成喔！`;
+          `您已選擇：選項【${optNames[optionIndex]}】。答對得 100 分，答題速度愈快還有額外加成喔！`;
       };
 
-      // 賓客手機畫面切換
-      function updateGuestUI() {
+      // 核心優化：去中心化手機端算分，極速同步狀態，完美解開第二題不跳選項的問題！
+      async function updateGuestUI() {
         const loginSec = document.getElementById("guest-login");
         const waitSec = document.getElementById("guest-waiting");
         const quizSec = document.getElementById("guest-quiz");
@@ -1577,37 +1574,61 @@
 
         if (!myGuestName) {
           loginSec.classList.remove("hidden");
-          waitSec.classList.add("hidden");
-          quizSec.classList.add("hidden");
-          feedbackSec.classList.add("hidden");
-          resultSec.classList.add("hidden");
-          overSec.classList.add("hidden");
+          [waitSec, quizSec, feedbackSec, resultSec, overSec].forEach((el) =>
+            el.classList.add("hidden"),
+          );
           return;
         }
 
-        const myInfo = gameState.players.find((p) => p.name === myGuestName);
+        const myUid = currentUser ? currentUser.uid : "local_test";
+        const myInfo = gameState.players ? gameState.players[myUid] : null;
+
         if (myInfo) {
           myScore = myInfo.score || 0;
           document.getElementById("guest-my-score").textContent =
             `${myScore} pt`;
         }
 
+        // ================= 重點解法：手機端一旦監測到大螢幕進入新一題，立刻重置作答選項 =================
+        if (gameState.currentStep === "quiz" && !gameState.showAnswer) {
+          if (myInfo && myInfo.currentAnswer !== -1 && myCurrentAnswer === -1) {
+            // 這個情況表示上一題剛公佈完，大螢幕主持人切換到了全新題目。向資料庫進行原子化重設
+            if (isFirebaseConnected && db) {
+              const gameRef = doc(
+                db,
+                "artifacts",
+                appId,
+                "public",
+                "data",
+                "game_state",
+                "current",
+              );
+              const updatePayload = {};
+              updatePayload[`players.${myUid}.currentAnswer`] = -1;
+              updatePayload[`players.${myUid}.answerTime`] = null;
+              await updateDoc(gameRef, updatePayload);
+            }
+          }
+          // 同步本機答題狀態
+          if (myInfo && myInfo.currentAnswer === -1) {
+            myCurrentAnswer = -1;
+          }
+        }
+
         if (gameState.currentStep === "lobby") {
           loginSec.classList.add("hidden");
           waitSec.classList.remove("hidden");
-          quizSec.classList.add("hidden");
-          feedbackSec.classList.add("hidden");
-          resultSec.classList.add("hidden");
-          overSec.classList.add("hidden");
-
+          [quizSec, feedbackSec, resultSec, overSec].forEach((el) =>
+            el.classList.add("hidden"),
+          );
           myCurrentAnswer = -1;
+          lastScoredQuestionIdx = -1;
         } else if (gameState.currentStep === "quiz") {
           loginSec.classList.add("hidden");
           waitSec.classList.add("hidden");
           overSec.classList.add("hidden");
 
-          const currentQ =
-            WEDDING_CONFIG.questions[gameState.currentQuestionIdx];
+          const currentQ = localQuestions[gameState.currentQuestionIdx];
 
           if (!gameState.showAnswer) {
             resultSec.classList.add("hidden");
@@ -1629,11 +1650,58 @@
               feedbackSec.classList.remove("hidden");
             }
           } else {
+            // 大螢幕揭曉答案階段 (去中心化分數計算：由各個賓客的手機個別計算後，自行寫回所屬的 Uid Map 格子中)
             quizSec.classList.add("hidden");
             feedbackSec.classList.add("hidden");
             resultSec.classList.remove("hidden");
 
             const isCorrect = myCurrentAnswer === currentQ.answer;
+
+            // 確保每一題在手機端只會被觸發與加分一次，避免迴圈或網絡重置重複累加
+            if (
+              isCorrect &&
+              lastScoredQuestionIdx < gameState.currentQuestionIdx
+            ) {
+              lastScoredQuestionIdx = gameState.currentQuestionIdx;
+
+              // 計算速度加成 (最高50分)
+              let timeBonus = 0;
+              if (myInfo && myInfo.answerTime) {
+                const elapsed = Math.max(
+                  0,
+                  (myInfo.answerTime -
+                    (gameState.timerEndTime -
+                      WEDDING_CONFIG.countdownSeconds * 1000)) /
+                    1000,
+                );
+                timeBonus = Math.max(0, Math.round(50 - elapsed * 2.5));
+              }
+              const addedScore = 100 + timeBonus;
+              const newScore = myScore + addedScore;
+
+              if (isFirebaseConnected && db) {
+                const gameRef = doc(
+                  db,
+                  "artifacts",
+                  appId,
+                  "public",
+                  "data",
+                  "game_state",
+                  "current",
+                );
+                const scorePayload = {};
+                scorePayload[`players.${myUid}.score`] = newScore;
+                await updateDoc(gameRef, scorePayload);
+              } else {
+                if (myInfo) myInfo.score = newScore;
+              }
+            } else if (
+              !isCorrect &&
+              lastScoredQuestionIdx < gameState.currentQuestionIdx
+            ) {
+              lastScoredQuestionIdx = gameState.currentQuestionIdx;
+            }
+
             const optNames = ["A", "B", "C", "D"];
             const resultIcon = document.getElementById("result-status-icon");
             const resultTitle = document.getElementById("result-status-title");
@@ -1658,19 +1726,12 @@
               `正確答案是： 【${optNames[currentQ.answer]}】 ${currentQ.options[currentQ.answer]}`;
             document.getElementById("guest-result-explanation").textContent =
               currentQ.explanation;
-
-            if (myCurrentAnswer !== -1 && !gameState.showAnswer) {
-              myCurrentAnswer = -1;
-            }
           }
         } else if (gameState.currentStep === "ranking") {
-          loginSec.classList.add("hidden");
-          waitSec.classList.add("hidden");
-          quizSec.classList.add("hidden");
-          feedbackSec.classList.add("hidden");
-          resultSec.classList.add("hidden");
+          [loginSec, waitSec, quizSec, feedbackSec, resultSec].forEach((el) =>
+            el.classList.add("hidden"),
+          );
           overSec.classList.remove("hidden");
-
           document.getElementById("guest-final-score").textContent =
             `${myScore} pt`;
         }
@@ -1695,10 +1756,11 @@
       }
 
       // ================= 整合式安全啟動器 =================
-      function startApp() {
+      async function startApp() {
         setInterval(createSakura, 350);
         determineRole();
-        initFirebase();
+        await loadQuestions(); // 動態從外部 JSON 載入題庫 (遭遇本地 CORS 時將優雅降級使用內置庫，100% 不卡死)
+        await initFirebase(); // 安全登入並連線
       }
 
       if (
