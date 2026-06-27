@@ -474,7 +474,7 @@
           </button>
         </div>
 
-        <!-- 賓客等待大廳 (Waiting Screen - Cute and interactive) -->
+        <!-- 賓客等待大廳 (Waiting Screen) -->
         <div
           id="guest-waiting"
           class="hidden text-center py-8 flex flex-col items-center gap-4"
@@ -853,7 +853,7 @@
         countdownSeconds: 20,
       };
 
-      // 預設強健的本地題庫 (即便 JSON 讀取因 CORS 失敗，也能完美無縫運行 5 題！)
+      // 預設內置強健題庫 (當 JSON CORS 遭遇本機限制時，啟動無縫降級運作保護)
       let localQuestions = [
         {
           title: "昶瑋跟俞蕙當初是在哪裡第一次見面的？",
@@ -930,20 +930,21 @@
           ? __app_id
           : "changwei_yuhui_wedding_game_ppt";
 
-      // 遊戲全域狀態 (完全將 players 從單純陣列改為鍵值對 Map以防止高併發衝突)
+      // 遊戲雲端狀態
       let gameState = {
         currentStep: "lobby",
         currentQuestionIdx: 0,
         showAnswer: false,
         timerEndTime: 0,
-        players: {}, // 使用 Map 儲存： { "uid123": { name: "阿明", score: 0 ... } }
+        players: {}, // 使用 Map 避免 400 人覆蓋衝突
         lastUpdated: Date.now(),
       };
 
       let myGuestName = "";
       let myScore = 0;
       let myCurrentAnswer = -1;
-      let lastScoredQuestionIdx = -1; // 避免重複加分的保險機制
+      let lastScoredQuestionIdx = -1;
+      let lastActiveQuestionIdx = -1; // 用於主動追蹤 Host 題號更新
       let timerInterval = null;
       let currentRole = "master";
 
@@ -1007,7 +1008,7 @@
             auth = getAuth(app);
             db = getFirestore(app);
 
-            // 確保先進行安全匿名登入，滿足規則要求
+            // 匿名登入
             const userCredential = await signInAnonymously(auth);
             currentUser = userCredential.user;
             isFirebaseConnected = true;
@@ -1492,7 +1493,7 @@
 
           const myUid = currentUser ? currentUser.uid : "local_" + Date.now();
 
-          // 去中心化：直接往專屬我的 Uid 鍵值欄位寫入，完全避免互相蓋台
+          // 去中心化寫入 Uid Map：免去重複覆蓋的痛苦
           if (isFirebaseConnected && db) {
             const gameRef = doc(
               db,
@@ -1563,7 +1564,7 @@
           `您已選擇：選項【${optNames[optionIndex]}】。答對得 100 分，答題速度愈快還有額外加成喔！`;
       };
 
-      // 核心優化：去中心化手機端算分，極速同步狀態，完美解開第二題不跳選項的問題！
+      // 核心安全狀態機：包含自動重連、去中心化算分、以及毫秒級題目切換同步！
       async function updateGuestUI() {
         const loginSec = document.getElementById("guest-login");
         const waitSec = document.getElementById("guest-waiting");
@@ -1571,6 +1572,32 @@
         const feedbackSec = document.getElementById("guest-feedback");
         const resultSec = document.getElementById("guest-result");
         const overSec = document.getElementById("guest-game-over");
+
+        const myUid = currentUser ? currentUser.uid : "local_test";
+
+        // 【重整恢復機制】：如果手機重整導致本機記憶消失，而雲端資料庫中仍存有此 UID 紀錄，自動無痛還原登入
+        if (!myGuestName && gameState.players && gameState.players[myUid]) {
+          myGuestName = gameState.players[myUid].name;
+          document.getElementById("guest-my-name").textContent = myGuestName;
+
+          // 還原該玩家本題作答狀態
+          lastActiveQuestionIdx = gameState.currentQuestionIdx;
+          if (gameState.players[myUid].currentAnswer !== undefined) {
+            myCurrentAnswer = gameState.players[myUid].currentAnswer;
+          }
+        }
+
+        // 如果主控端重置了遊戲（清空了所有人），本地端同步清空返回登入
+        if (
+          myGuestName &&
+          gameState.currentStep === "lobby" &&
+          (!gameState.players || !gameState.players[myUid])
+        ) {
+          myGuestName = "";
+          myCurrentAnswer = -1;
+          lastActiveQuestionIdx = -1;
+          lastScoredQuestionIdx = -1;
+        }
 
         if (!myGuestName) {
           loginSec.classList.remove("hidden");
@@ -1580,7 +1607,6 @@
           return;
         }
 
-        const myUid = currentUser ? currentUser.uid : "local_test";
         const myInfo = gameState.players ? gameState.players[myUid] : null;
 
         if (myInfo) {
@@ -1589,11 +1615,20 @@
             `${myScore} pt`;
         }
 
-        // ================= 重點解法：手機端一旦監測到大螢幕進入新一題，立刻重置作答選項 =================
+        // 【毫秒級切換下題重置邏輯】：由 Host 題號與本地紀錄指針比對判定
         if (gameState.currentStep === "quiz" && !gameState.showAnswer) {
-          if (myInfo && myInfo.currentAnswer !== -1 && myCurrentAnswer === -1) {
-            // 這個情況表示上一題剛公佈完，大螢幕主持人切換到了全新題目。向資料庫進行原子化重設
-            if (isFirebaseConnected && db) {
+          if (lastActiveQuestionIdx !== gameState.currentQuestionIdx) {
+            // 指針不同，意味著全新題目開始了！
+            lastActiveQuestionIdx = gameState.currentQuestionIdx;
+            myCurrentAnswer = -1; // 解鎖本機選擇
+
+            // 如果雲端尚殘留前一題作答痕跡，將其原子性寫入重置為 -1
+            if (
+              isFirebaseConnected &&
+              db &&
+              myInfo &&
+              myInfo.currentAnswer !== -1
+            ) {
               const gameRef = doc(
                 db,
                 "artifacts",
@@ -1609,7 +1644,7 @@
               await updateDoc(gameRef, updatePayload);
             }
           }
-          // 同步本機答題狀態
+          // 本地與雲端重置同步確認
           if (myInfo && myInfo.currentAnswer === -1) {
             myCurrentAnswer = -1;
           }
@@ -1623,6 +1658,7 @@
           );
           myCurrentAnswer = -1;
           lastScoredQuestionIdx = -1;
+          lastActiveQuestionIdx = -1;
         } else if (gameState.currentStep === "quiz") {
           loginSec.classList.add("hidden");
           waitSec.classList.add("hidden");
@@ -1650,21 +1686,21 @@
               feedbackSec.classList.remove("hidden");
             }
           } else {
-            // 大螢幕揭曉答案階段 (去中心化分數計算：由各個賓客的手機個別計算後，自行寫回所屬的 Uid Map 格子中)
+            // 大螢幕揭曉答案階段 (各賓客手機個別計算，自行向自己的 Uid 格子原子更新，不干擾他人)
             quizSec.classList.add("hidden");
             feedbackSec.classList.add("hidden");
             resultSec.classList.remove("hidden");
 
             const isCorrect = myCurrentAnswer === currentQ.answer;
 
-            // 確保每一題在手機端只會被觸發與加分一次，避免迴圈或網絡重置重複累加
+            // 確保每題在揭曉時，單台手機僅做一次加分寫入，杜絕網絡延遲重複加分
             if (
               isCorrect &&
               lastScoredQuestionIdx < gameState.currentQuestionIdx
             ) {
               lastScoredQuestionIdx = gameState.currentQuestionIdx;
 
-              // 計算速度加成 (最高50分)
+              // 速度加成計算 (最快+50分)
               let timeBonus = 0;
               if (myInfo && myInfo.answerTime) {
                 const elapsed = Math.max(
@@ -1759,8 +1795,8 @@
       async function startApp() {
         setInterval(createSakura, 350);
         determineRole();
-        await loadQuestions(); // 動態從外部 JSON 載入題庫 (遭遇本地 CORS 時將優雅降級使用內置庫，100% 不卡死)
-        await initFirebase(); // 安全登入並連線
+        await loadQuestions();
+        await initFirebase();
       }
 
       if (
