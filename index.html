@@ -985,7 +985,8 @@
           const response = await fetch("questions.json");
           if (response.ok) {
             localQuestions = await response.json();
-            console.log("成功自 questions.json 載入最新題庫！", localQuestions);
+            console.log("成功自 questions.json 載入最新題庫！");
+            // console.log("成功自 questions.json 載入最新題庫！", localQuestions);
           } else {
             console.warn("無法存取 questions.json，已完美啟用本地內置題庫。");
           }
