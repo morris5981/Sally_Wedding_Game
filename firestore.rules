@@ -1,0 +1,70 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function isHost() {
+      return signedIn()
+        && request.auth.token.email in [
+          'ozkq0925@gmail.com',
+          'morris598107@gmail.com'
+        ];
+    }
+
+    function isAnonymousGuest() {
+      return signedIn()
+        && request.auth.token.firebase.sign_in_provider == 'anonymous';
+    }
+
+    match /artifacts/{appId}/public/data/game_state/current {
+      allow read: if signedIn();
+      allow create, delete: if isHost();
+      allow update: if isHost() || guestMayUpdateOwnPlayer();
+
+      function guestMayUpdateOwnPlayer() {
+        let uid = request.auth.uid;
+        let oldPlayers = resource.data.players;
+        let newPlayers = request.resource.data.players;
+        let oldPlayer = oldPlayers.get(uid, {});
+        let newPlayer = newPlayers.get(uid, {});
+        let changedPlayers = newPlayers.diff(oldPlayers).affectedKeys();
+        let changedPlayerFields = newPlayer.diff(oldPlayer).affectedKeys();
+        let isJoining = !oldPlayers.keys().hasAny([uid])
+          && newPlayer.keys().hasOnly([
+            'name', 'score', 'currentAnswer', 'answerTime', 'uid'
+          ])
+          && newPlayer.name is string
+          && newPlayer.score == 0
+          && newPlayer.currentAnswer == -1
+          && newPlayer.answerTime == null
+          && newPlayer.uid == uid;
+        let isAnswering = resource.data.currentStep == 'quiz'
+          && resource.data.showAnswer == false
+          && oldPlayer.get('currentAnswer', -1) == -1
+          && changedPlayerFields.hasAny(['currentAnswer'])
+          && changedPlayerFields.hasOnly(['currentAnswer', 'answerTime'])
+          && newPlayer.currentAnswer is int
+          && newPlayer.currentAnswer >= 0
+          && newPlayer.currentAnswer <= 3
+          && newPlayer.answerTime is int;
+
+        return isAnonymousGuest()
+          && request.resource.data.diff(resource.data).affectedKeys()
+            .hasOnly(['players', 'lastUpdated'])
+          && changedPlayers.hasAny([uid])
+          && changedPlayers.hasOnly([uid])
+          && (isJoining || isAnswering);
+      }
+    }
+
+    match /artifacts/{appId}/public/data/host_session/current {
+      allow read, write: if isHost();
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
