@@ -128,20 +128,55 @@
         class="hidden w-full max-w-md ppt-card p-8 flex-col gap-5 text-center"
       >
         <div>
-          <span class="text-xs font-semibold tracking-[0.2em] uppercase gold-text">Host Access</span>
-          <h1 class="serif-title text-3xl font-extrabold text-[#5c4a42] mt-2">主控登入</h1>
-          <p class="text-sm text-[#8c7466] mt-2">請使用婚禮主控帳號登入以管理遊戲。</p>
+          <span
+            class="text-xs font-semibold tracking-[0.2em] uppercase gold-text"
+            >Host Access</span
+          >
+          <h1 class="serif-title text-3xl font-extrabold text-[#5c4a42] mt-2">
+            主控登入
+          </h1>
+          <p class="text-sm text-[#8c7466] mt-2">
+            請使用婚禮主控帳號登入以管理遊戲。
+          </p>
         </div>
         <form id="master-login-form" class="flex flex-col gap-3 text-left">
-          <label class="text-xs font-bold text-[#8c7466]" for="master-login-email">主控帳號</label>
-          <select id="master-login-email" autocomplete="username" class="w-full px-4 py-3 rounded-xl border border-[#e2c7b2] bg-white text-[#5c4a42]">
+          <label
+            class="text-xs font-bold text-[#8c7466]"
+            for="master-login-email"
+            >主控帳號</label
+          >
+          <select
+            id="master-login-email"
+            autocomplete="username"
+            class="w-full px-4 py-3 rounded-xl border border-[#e2c7b2] bg-white text-[#5c4a42]"
+          >
             <option value="ozkq0925@gmail.com">ozkq0925@gmail.com</option>
-            <option value="morris598107@gmail.com">morris598107@gmail.com</option>
+            <option value="morris598107@gmail.com">
+              morris598107@gmail.com
+            </option>
           </select>
-          <label class="text-xs font-bold text-[#8c7466]" for="master-login-password">密碼</label>
-          <input id="master-login-password" type="password" required autocomplete="current-password" class="w-full px-4 py-3 rounded-xl border border-[#e2c7b2] focus:outline-none focus:ring-2 focus:ring-[#aa7c11]" />
-          <p id="master-login-error" class="hidden text-sm text-rose-600" role="alert"></p>
-          <button id="btn-master-login" type="submit" class="w-full py-3 gold-btn rounded-xl font-bold">
+          <label
+            class="text-xs font-bold text-[#8c7466]"
+            for="master-login-password"
+            >密碼</label
+          >
+          <input
+            id="master-login-password"
+            type="password"
+            required
+            autocomplete="current-password"
+            class="w-full px-4 py-3 rounded-xl border border-[#e2c7b2] focus:outline-none focus:ring-2 focus:ring-[#aa7c11]"
+          />
+          <p
+            id="master-login-error"
+            class="hidden text-sm text-rose-600"
+            role="alert"
+          ></p>
+          <button
+            id="btn-master-login"
+            type="submit"
+            class="w-full py-3 gold-btn rounded-xl font-bold"
+          >
             <i class="fa-solid fa-lock mr-2"></i>登入主控
           </button>
         </form>
@@ -168,7 +203,11 @@
             </h1>
           </div>
           <div class="flex items-center gap-4">
-            <button id="btn-master-logout" type="button" class="hidden px-3 py-2 rounded-full border border-[#e2c7b2] text-xs font-semibold text-[#8c7466] hover:bg-[#fbf4ee]">
+            <button
+              id="btn-master-logout"
+              type="button"
+              class="hidden px-3 py-2 rounded-full border border-[#e2c7b2] text-xs font-semibold text-[#8c7466] hover:bg-[#fbf4ee]"
+            >
               <i class="fa-solid fa-right-from-bracket mr-1"></i>登出主控
             </button>
             <div
@@ -1271,7 +1310,9 @@
 
       function showMasterLogin(message = "") {
         document.getElementById("screen-master").classList.add("hidden");
-        document.getElementById("screen-master-login").classList.remove("hidden");
+        document
+          .getElementById("screen-master-login")
+          .classList.remove("hidden");
         const error = document.getElementById("master-login-error");
         error.textContent = message;
         error.classList.toggle("hidden", !message);
@@ -1284,7 +1325,8 @@
         const loginButton = document.getElementById("btn-master-login");
         const error = document.getElementById("master-login-error");
         loginButton.disabled = true;
-        loginButton.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i>驗證中…';
+        loginButton.innerHTML =
+          '<i class="fa-solid fa-spinner fa-spin mr-2"></i>驗證中…';
         error.classList.add("hidden");
 
         try {
@@ -1330,9 +1372,13 @@
           isFirebaseConnected = true;
           isHandlingHostReplacement = false;
           watchHostSession(sessionRef);
-          document.getElementById("screen-master-login").classList.add("hidden");
+          document
+            .getElementById("screen-master-login")
+            .classList.add("hidden");
           document.getElementById("screen-master").classList.remove("hidden");
-          document.getElementById("btn-master-logout").classList.remove("hidden");
+          document
+            .getElementById("btn-master-logout")
+            .classList.remove("hidden");
           updateDbBadge(true, "主控已登入，即時連線中");
           initMasterFlow();
           listenToGameStatus();
@@ -1354,12 +1400,13 @@
                   ? "帳密驗證已通過，但 Firestore 拒絕主控工作階段。請確認部署到 sally-wedding-game 的 (default) 資料庫，且登入帳號已驗證 Email。"
                   : loginError.code === "auth/too-many-requests"
                     ? "登入嘗試過多，請稍候再試或重設密碼。"
-                : loginError.message || "登入失敗，請稍後再試。";
+                    : loginError.message || "登入失敗，請稍後再試。";
           error.classList.remove("hidden");
         } finally {
           passwordInput.value = "";
           loginButton.disabled = false;
-          loginButton.innerHTML = '<i class="fa-solid fa-lock mr-2"></i>登入主控';
+          loginButton.innerHTML =
+            '<i class="fa-solid fa-lock mr-2"></i>登入主控';
         }
       }
 
@@ -1382,7 +1429,9 @@
         );
       }
 
-      async function handleHostSessionReplaced(message = "此主控已在其他位置登入，本頁已登出。") {
+      async function handleHostSessionReplaced(
+        message = "此主控已在其他位置登入，本頁已登出。",
+      ) {
         if (isHandlingHostReplacement) return;
         isHandlingHostReplacement = true;
         isFirebaseConnected = false;
@@ -1417,7 +1466,10 @@
         try {
           await runTransaction(db, async (transaction) => {
             const sessionSnapshot = await transaction.get(sessionRef);
-            if (sessionSnapshot.exists() && sessionSnapshot.data().sessionId === sessionId) {
+            if (
+              sessionSnapshot.exists() &&
+              sessionSnapshot.data().sessionId === sessionId
+            ) {
               transaction.delete(sessionRef);
             }
           });
@@ -1641,7 +1693,9 @@
           initGuestFlow();
         } else {
           currentRole = "master";
-          document.getElementById("screen-master-login").classList.remove("hidden");
+          document
+            .getElementById("screen-master-login")
+            .classList.remove("hidden");
           document.getElementById("screen-master").classList.add("hidden");
           document.getElementById("screen-guest").classList.add("hidden");
         }
@@ -2144,7 +2198,9 @@
               console.error("賓客加入失敗:", error);
               myGuestName = "";
               document.getElementById("guest-my-name").textContent = "尚未登入";
-              showCustomAlert("目前連線較忙，尚未成功加入。請稍候片刻後再試一次。");
+              showCustomAlert(
+                "目前連線較忙，尚未成功加入。請稍候片刻後再試一次。",
+              );
               return;
             }
           } else {
@@ -2262,7 +2318,6 @@
             lastActiveQuestionIdx = gameState.currentQuestionIdx;
             myCurrentAnswer = -1; // 解鎖本機選擇
             lastRoundScore = 0;
-
           }
           // 本地與雲端重置同步確認
           if (myInfo && myInfo.currentAnswer === -1) {
