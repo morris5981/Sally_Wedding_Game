@@ -52,8 +52,20 @@
         transform: translateY(-2px);
         box-shadow: 0 6px 20px rgba(170, 124, 17, 0.35);
       }
+      .guest-option {
+        background-color: #ffffff !important;
+        border-color: #e2c7b2 !important;
+      }
+      .guest-option:hover,
+      .guest-option:active {
+        background-color: #fbf4ee !important;
+      }
+      .guest-option-badge {
+        background-color: #fbf4ee !important;
+        color: #aa7c11 !important;
+      }
 
-      /* 櫻花與愛心飄落 */
+      /*櫻花與愛心飄落 */
       .cherry-blossom {
         position: absolute;
         background-color: #ffb7c5;
@@ -547,7 +559,7 @@
                 <span
                   id="quiz-countdown"
                   class="text-base font-semibold text-[#8c7466]"
-                  >倒數 20 秒</span
+                  >倒數 15 秒</span
                 >
               </div>
               <div class="flex gap-4">
@@ -750,7 +762,7 @@
               <span
                 id="guest-quiz-timer"
                 class="text-sm font-semibold gold-text"
-                >倒數 20 秒</span
+                >倒數 15 秒</span
               >
             </div>
             <p
@@ -766,10 +778,10 @@
             <button
               onclick="submitAnswer(0)"
               id="guest-btn-0"
-              class="w-full p-4 bg-white hover:bg-[#fbf4ee]/30 border border-[#e2c7b2] active:bg-[#fbf4ee]/50 rounded-xl flex items-center gap-4 transition text-left"
+              class="guest-option w-full p-4 border rounded-xl flex items-center gap-4 transition text-left"
             >
               <span
-                class="w-8 h-8 rounded-full bg-red-100 text-red-600 font-bold flex items-center justify-center"
+                class="guest-option-badge w-8 h-8 rounded-full font-bold flex items-center justify-center"
                 >A</span
               >
               <span
@@ -781,10 +793,10 @@
             <button
               onclick="submitAnswer(1)"
               id="guest-btn-1"
-              class="w-full p-4 bg-white hover:bg-[#fbf4ee]/30 border border-[#e2c7b2] active:bg-[#fbf4ee]/50 rounded-xl flex items-center gap-4 transition text-left"
+              class="guest-option w-full p-4 border rounded-xl flex items-center gap-4 transition text-left"
             >
               <span
-                class="w-8 h-8 rounded-full bg-blue-100 text-blue-600 font-bold flex items-center justify-center"
+                class="guest-option-badge w-8 h-8 rounded-full font-bold flex items-center justify-center"
                 >B</span
               >
               <span
@@ -796,10 +808,10 @@
             <button
               onclick="submitAnswer(2)"
               id="guest-btn-2"
-              class="w-full p-4 bg-white hover:bg-[#fbf4ee]/30 border border-[#e2c7b2] active:bg-[#fbf4ee]/50 rounded-xl flex items-center gap-4 transition text-left"
+              class="guest-option w-full p-4 border rounded-xl flex items-center gap-4 transition text-left"
             >
               <span
-                class="w-8 h-8 rounded-full bg-green-100 text-green-600 font-bold flex items-center justify-center"
+                class="guest-option-badge w-8 h-8 rounded-full font-bold flex items-center justify-center"
                 >C</span
               >
               <span
@@ -811,10 +823,10 @@
             <button
               onclick="submitAnswer(3)"
               id="guest-btn-3"
-              class="w-full p-4 bg-white hover:bg-[#fbf4ee]/30 border border-[#e2c7b2] active:bg-[#fbf4ee]/50 rounded-xl flex items-center gap-4 transition text-left"
+              class="guest-option w-full p-4 border rounded-xl flex items-center gap-4 transition text-left"
             >
               <span
-                class="w-8 h-8 rounded-full bg-yellow-100 text-yellow-600 font-bold flex items-center justify-center"
+                class="guest-option-badge w-8 h-8 rounded-full font-bold flex items-center justify-center"
                 >D</span
               >
               <span
@@ -1105,7 +1117,7 @@
         },
         groomName: "昶瑋",
         brideName: "俞蕙",
-        countdownSeconds: 20,
+        countdownSeconds: 15,
       };
 
       // 移除所有預置本地題庫，改為完全動態空陣列
@@ -1183,6 +1195,14 @@
             .classList.add("hidden");
           onConfirm();
         };
+      }
+
+      function isAnswerCorrect(question, selectedIndex) {
+        if (!question || !Number.isInteger(selectedIndex)) return false;
+        const answers = Array.isArray(question.answers)
+          ? question.answers
+          : [question.answer];
+        return answers.includes(selectedIndex);
       }
 
       function getQuestionForSync(question, revealAnswer = false) {
@@ -1628,7 +1648,7 @@
         const scoreUpdates = {};
 
         Object.entries(gameState.players || {}).forEach(([uid, player]) => {
-          if (player.currentAnswer !== question.answer || !player.answerTime) {
+          if (!isAnswerCorrect(question, player.currentAnswer) || !player.answerTime) {
             return;
           }
           const elapsed = Math.max(
@@ -1977,7 +1997,7 @@
               });
             }
 
-            if (i === currentQ.answer) {
+            if (isAnswerCorrect(currentQ, i)) {
               const correctBadge = document.getElementById(
                 `option-correct-badge-${i}`,
               );
@@ -2061,8 +2081,17 @@
           const rank = document.createElement("span");
           rank.className =
             "w-7 h-7 shrink-0 rounded-full bg-[#fbf4ee] text-[#aa7c11] border border-[#e2c7b2]/70 text-xs font-black flex items-center justify-center";
+          const playerScore = Number(player.score) || 0;
+          const rankNumber =
+            1 + sorted.filter((other) => (Number(other.score) || 0) > playerScore).length;
           rank.textContent =
-            index < 3 ? ["🥇", "🥈", "🥉"][index] : `${index + 1}`;
+            rankNumber === 1
+              ? "🥇"
+              : rankNumber === 2
+                ? "🥈"
+                : rankNumber === 3
+                  ? "🥉"
+                  : `${rankNumber}`;
           const name = document.createElement("span");
           name.className = "truncate text-sm font-semibold text-[#5c4a42]";
           name.textContent = player.name || "幸福貴賓";
@@ -2129,11 +2158,9 @@
 
         for (let i = 0; i < limit; i++) {
           const rankItem = document.createElement("div");
-          let trophy = `🥇`;
-          if (i === 1) trophy = `🥈`;
-          else if (i === 2) trophy = `🥉`;
-          else
-            trophy = `<span class="w-6 h-6 rounded-full bg-[#fbf4ee] border border-[#e2c7b2] text-xs font-bold flex items-center justify-center text-[#aa7c11]">${i + 1}</span>`;
+          const playerScore = Number(sorted[i].score) || 0;
+          const rankNumber = 1 + sorted.filter((player) => (Number(player.score) || 0) > playerScore).length;
+          let trophy = rankNumber === 1 ? `🥇` : rankNumber === 2 ? `🥈` : rankNumber === 3 ? `🥉` : `<span class="w-6 h-6 rounded-full bg-[#fbf4ee] border border-[#e2c7b2] text-xs font-bold flex items-center justify-center text-[#aa7c11]">${rankNumber}</span>`;
 
           rankItem.className =
             "flex justify-between items-center bg-white/80 p-3.5 rounded-xl border border-[#e2c7b2]/60 shadow-sm animate-fade-in";
@@ -2379,7 +2406,7 @@
             feedbackSec.classList.add("hidden");
             resultSec.classList.remove("hidden");
 
-            const isCorrect = myCurrentAnswer === currentQ.answer;
+            const isCorrect = isAnswerCorrect(currentQ, myCurrentAnswer);
 
             // 確保每題在揭曉時，單台手機僅做一次加分寫入，杜絕網絡延遲重複加分
             if (
@@ -2446,14 +2473,20 @@
                 ([, playerA], [, playerB]) =>
                   (Number(playerB.score) || 0) - (Number(playerA.score) || 0),
               );
+            const currentPlayerScore = Math.max(Number(gameState.players[myUid]?.score) || 0, myScore);
             const currentRank =
-              standings.findIndex(([uid]) => uid === myUid) + 1;
+              1 + standings.filter(([, player]) => (Number(player.score) || 0) > currentPlayerScore).length;
             document.getElementById("guest-current-rank").textContent =
               currentRank > 0
                 ? `目前排名第 ${currentRank} 名 / 共 ${standings.length} 位`
                 : "排名同步中…";
+            const correctAnswers = Array.isArray(currentQ.answers)
+              ? currentQ.answers
+              : [currentQ.answer];
             document.getElementById("result-correct-answer").textContent =
-              `正確答案是： 【${optNames[currentQ.answer]}】 ${currentQ.options[currentQ.answer]}`;
+              `正確答案是： ${correctAnswers
+                .map((answerIndex) => `【${optNames[answerIndex]}】 ${currentQ.options[answerIndex]}`)
+                .join("、")}`;
             document.getElementById("guest-result-explanation").textContent =
               isCorrect
                 ? currentQ.explanation
